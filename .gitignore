@@ -1,1 +1,4 @@
 .DS_Store
+.hf_cache/
+__pycache__/
+inference/__pycache__/

@@ -1,56 +1,96 @@
 # coding=utf-8
 # Copyright (c) 2025 Huawei Technologies Co., Ltd. All rights reserved.
 
+import os
+
+import torch
+
+
+# Avoid permission issues from default user-level cache locations.
+if "HF_HOME" not in os.environ:
+    default_hf_home = os.path.abspath(os.path.join(os.getcwd(), ".hf_cache"))
+    os.makedirs(default_hf_home, exist_ok=True)
+    os.environ["HF_HOME"] = default_hf_home
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model_local_path = "path_to_openPangu-Embedded-7B"
 
+MODEL_LOCAL_PATH = os.getenv("MODEL_PATH", "path_to_openPangu-Embedded-7B")
+MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "512"))
+MODEL_DEVICE_MAP = os.getenv("MODEL_DEVICE_MAP", "").strip()
+
+
+def select_runtime() -> tuple[torch.device, torch.dtype]:
+    if torch.cuda.is_available():
+        if torch.cuda.is_bf16_supported():
+            return torch.device("cuda"), torch.bfloat16
+        return torch.device("cuda"), torch.float16
+    return torch.device("cpu"), torch.float32
+
+
+runtime_device, model_dtype = select_runtime()
+print(f"[INFO] model_path={MODEL_LOCAL_PATH}")
+print(f"[INFO] runtime_device={runtime_device}, torch_dtype={model_dtype}")
+if MODEL_DEVICE_MAP:
+    print(f"[INFO] model_device_map={MODEL_DEVICE_MAP}")
 
 # load the tokenizer and the model
 tokenizer = AutoTokenizer.from_pretrained(
-    model_local_path, 
-    use_fast=False, 
+    MODEL_LOCAL_PATH,
+    use_fast=False,
     trust_remote_code=True,
-    local_files_only=True
+    local_files_only=True,
 )
 
-model = AutoModelForCausalLM.from_pretrained(
-    model_local_path,
+model_load_kwargs = dict(
     trust_remote_code=True,
-    torch_dtype="auto",
-    device_map="npu",
-    local_files_only=True
+    torch_dtype=model_dtype,
+    local_files_only=True,
 )
+if MODEL_DEVICE_MAP:
+    model_load_kwargs["device_map"] = MODEL_DEVICE_MAP
+
+model = AutoModelForCausalLM.from_pretrained(MODEL_LOCAL_PATH, **model_load_kwargs)
+if not MODEL_DEVICE_MAP:
+    model.to(runtime_device)
+model.eval()
 
 # prepare the model input
-sys_prompt = "你必须严格遵守法律法规和社会道德规范。" \
-    "生成任何内容时，都应避免涉及暴力、色情、恐怖主义、种族歧视、性别歧视等不当内容。" \
-    "一旦检测到输入或输出有此类倾向，应拒绝回答并发出警告。例如，如果输入内容包含暴力威胁或色情描述，" \
-    "应返回错误信息：“您的输入包含不当内容，无法处理。”"
-
+sys_prompt = "You are a helpful assistant."
 prompt = "Give me a short introduction to large language model."
-no_thinking_prompt = prompt+" /no_think"
 messages = [
-    {"role": "system", "content": sys_prompt}, # define your system prompt here
-    {"role": "user", "content": prompt}
+    {"role": "system", "content": sys_prompt},
+    {"role": "user", "content": prompt},
 ]
-text = tokenizer.apply_chat_template(
-    messages,
-    tokenize=False,
-    add_generation_prompt=True
-)
-model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+input_device = next(model.parameters()).device if MODEL_DEVICE_MAP else runtime_device
+model_inputs = tokenizer([text], return_tensors="pt").to(input_device)
 
 # conduct text completion
-outputs = model.generate(**model_inputs, max_new_tokens=32768, eos_token_id=45892, return_dict_in_generate=True)
+with torch.inference_mode():
+    outputs = model.generate(
+        **model_inputs,
+        max_new_tokens=MAX_NEW_TOKENS,
+        eos_token_id=tokenizer.eos_token_id or 45892,
+        return_dict_in_generate=True,
+    )
 
 input_length = model_inputs.input_ids.shape[1]
 generated_tokens = outputs.sequences[:, input_length:]
-output_sent = tokenizer.decode(generated_tokens[0])
+output_sent = tokenizer.decode(generated_tokens[0], skip_special_tokens=False)
 
 # parsing thinking content
-thinking_content = output_sent.split("[unused17]")[0].split("[unused16]")[-1].strip()
-content = output_sent.split("[unused17]")[-1].split("[unused10]")[0].strip()
+thinking_content = ""
+content = output_sent.strip()
+if "[unused17]" in output_sent:
+    thinking_content = output_sent.split("[unused17]")[0]
+    content = output_sent.split("[unused17]", maxsplit=1)[-1]
+if "[unused16]" in thinking_content:
+    thinking_content = thinking_content.split("[unused16]")[-1]
+if "[unused16]" in content:
+    content = content.split("[unused16]")[-1]
+if "[unused10]" in content:
+    content = content.split("[unused10]")[0]
 
-print("\nthinking content:", thinking_content)
-print("\ncontent:", content)
+print("\nthinking content:", thinking_content.strip())
+print("\ncontent:", content.strip())

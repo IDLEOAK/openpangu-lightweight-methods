@@ -1,0 +1,5 @@
+torch>=2.6.0
+transformers==4.53.2
+accelerate>=1.13.0
+safetensors>=0.7.0
+sentencepiece>=0.2.1

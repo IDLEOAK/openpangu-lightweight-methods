@@ -24,13 +24,21 @@ from typing import Callable, Optional, Tuple
 import torch
 from torch import nn
 
-import torch_npu
-from torch_npu.contrib import transfer_to_npu
-if "910" in torch.npu.get_device_name():
-    NPU_ATTN_INFR = True
-    print("[INFO] torch_npu detected. Using NPU fused infer attention.")
-else:
-    NPU_ATTN_INFR = False
+try:
+    import torch_npu  # type: ignore
+    from torch_npu.contrib import transfer_to_npu  # type: ignore  # noqa: F401
+except Exception:
+    torch_npu = None
+    transfer_to_npu = None
+
+NPU_ATTN_INFR = False
+if torch_npu is not None and hasattr(torch, "npu"):
+    try:
+        if "910" in torch.npu.get_device_name():
+            NPU_ATTN_INFR = True
+            print("[INFO] torch_npu detected. Using NPU fused infer attention.")
+    except Exception:
+        NPU_ATTN_INFR = False
 
 from transformers.cache_utils import Cache
 from transformers.modeling_flash_attention_utils import FlashAttentionKwargs
