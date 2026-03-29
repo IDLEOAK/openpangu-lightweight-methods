@@ -4,3 +4,5 @@ __pycache__/
 inference/__pycache__/
 experiments/results/*
 !experiments/results/README.md
+!experiments/results/current_result_summary.json
+!experiments/results/current_result_summary.md

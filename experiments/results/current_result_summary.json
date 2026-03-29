@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "perplexity": 343.118887,
+    "evaluation_samples": 8,
+    "evaluation_tokens": 458,
+    "peak_memory_mb": 1587.07
+  },
+  "sparsegpt": {
+    "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260329-171619-sparsegpt_port_full34_generation",
+    "sparsity": 0.3,
+    "layer_count": 34,
+    "module_count": 238,
+    "total_target_params": 6773800960,
+    "zero_params": 2032147825,
+    "zero_fraction": 0.300001,
+    "perplexity": 342.233663,
+    "elapsed_s": 606.8277,
+    "peak_memory_mb": 2466.29,
+    "generation": {
+      "skipped": true,
+      "reason": "CUDA out of memory. Tried to allocate 100.00 MiB. GPU 0 has a total capacity of 4.00 GiB of which 0 bytes is free. Of the allocated memory 10.63 GiB is allocated by PyTorch, and 106.73 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+    }
+  },
+  "gptq": {
+    "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260329-182405-gptq_port_full34_stable",
+    "bits": 4,
+    "group_size": 128,
+    "layer_count": 34,
+    "module_count": 238,
+    "total_target_params": 6773800960,
+    "quantized_fraction": 1.0,
+    "perplexity": 386.49593,
+    "elapsed_s": 771.2611,
+    "peak_memory_mb": 2866.3
+  }
+}
