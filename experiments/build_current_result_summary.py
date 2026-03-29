@@ -21,8 +21,8 @@ def read_json(path: Path):
 
 
 def main() -> int:
-    sparsegpt_dir = latest_run("sparsegpt", "sparsegpt_port_full34_generation")
-    gptq_dir = latest_run("gptq", "gptq_port_full34_stable")
+    sparsegpt_dir = latest_run("sparsegpt", "sparsegpt_port_full34_formal_local")
+    gptq_dir = latest_run("gptq", "gptq_port_full34_formal_local")
 
     sparsegpt_summary = read_json(sparsegpt_dir / "summary.json")
     gptq_summary = read_json(gptq_dir / "summary.json")

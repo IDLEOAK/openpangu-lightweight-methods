@@ -1,0 +1,16 @@
+{"text": "请系统说明后训练剪枝在大语言模型压缩中的作用，并从精度、显存、存储和工程可复现性四个维度分析它为什么在毕业设计和工程实践中具有实际价值。"}
+{"text": "请解释为什么大语言模型的压缩实验不能只看一个指标。请围绕 perplexity、生成质量、推理速度、峰值显存和权重文件大小展开，说明这些指标之间通常存在什么样的权衡关系。"}
+{"text": "在一个完整的模型轻量化研究中，为什么需要先建立统一 baseline，再推进剪枝和量化实验？请从实验设计、公平比较和论文撰写三个角度进行解释。"}
+{"text": "请用较为正式的语言说明后训练量化与后训练剪枝的核心区别，并解释为什么它们可以分别作为一条独立实验主线进行研究。"}
+{"text": "如果一个模型已经在 GPU 上跑通，那么这对后续迁移 SparseGPT 或 GPTQ 有什么实际意义？请从依赖兼容、调试效率和算法复现三个方面进行解释。"}
+{"text": "请介绍非结构化稀疏与结构化稀疏的差异，并说明为什么非结构化剪枝即使把大量权重置零，也不一定立即带来磁盘文件大小的下降。"}
+{"text": "Explain why a one-shot pruning method such as SparseGPT still needs calibration data, and describe what kind of information the method tries to capture from those calibration samples."}
+{"text": "Explain why the Hessian-related statistics used in post-training pruning can be viewed as a way to estimate the sensitivity of weight perturbations, and why this is often more informative than using magnitude alone."}
+{"text": "Please explain why a full-model compression pipeline often uses layer-wise sequential processing instead of quantizing or pruning all layers at once. Focus on memory pressure, error control and implementation practicality."}
+{"text": "请说明为什么在答辩中不能把当前 small-sample perplexity 波动直接解释成模型能力稳定提升。请从样本规模、评测口径和统计可信度三个方面说明原因。"}
+{"text": "请从工程实现角度解释 trust_remote_code 对本课题的影响。为什么它既是加载 OpenPangu 模型代码的必要条件，又会带来缓存路径和环境兼容性问题？"}
+{"text": "GPTQ uses post-training quantization with layer-wise error compensation. Explain why group-wise quantization and calibration-based parameter estimation help reduce quantization error in large language models."}
+{"text": "请分析为什么 4-bit GPTQ 即使能够显著降低理论位宽，也不一定立刻在当前实现中表现为磁盘大小下降。请结合 packed checkpoint 与 dense 回写两种情形说明。"}
+{"text": "请从研究流程角度说明为什么代码、文档和论文需要同步推进。如果只做代码而不更新文档与论文，会给毕业设计后期收尾带来哪些风险？"}
+{"text": "Please discuss why a result that is reproducible on a small local GPU is still valuable, even if the hardware cannot support all desired generation benchmarks. Focus on algorithm validation and staged project progress."}
+{"text": "请总结当前 OpenPangu 轻量化研究中的一个现实问题：为什么在 GPU 上建立实验基线并不等于要否定 Ascend/NPU 的优势？请从研究目的和平台定位两个角度回答。"}
