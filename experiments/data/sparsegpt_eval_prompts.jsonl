@@ -1,0 +1,8 @@
+{"text": "请用一段完整文字介绍后训练剪枝的基本目标、常见约束以及它与重新训练式压缩方法的差异。说明时尽量覆盖精度保持、显存压力和工程可复现性三个方面。"}
+{"text": "后训练量化通常需要在有限校准样本上估计参数或激活分布。请解释为什么校准样本的覆盖范围会影响量化误差，并给出一个面向中文大语言模型的直观例子。"}
+{"text": "在部署大语言模型时，研究者往往同时关心权重大小、峰值显存、推理延迟和生成质量。请围绕这四个指标写一段简要说明，解释它们之间为什么经常存在权衡关系。"}
+{"text": "OpenPangu 的公开实现更偏向 Ascend 生态，而许多后训练压缩算法首先在 PyTorch 和 CUDA 环境中流行。请用自然语言说明为什么先建立 GPU 基线有助于后续算法迁移与实验复现。"}
+{"text": "SparseGPT uses layer-wise Hessian information to support one-shot pruning with limited calibration data. Explain why second-order information can be more useful than simple magnitude masking when the goal is to reduce post-pruning error."}
+{"text": "When pruning a decoder-only language model, errors introduced in earlier layers may accumulate and affect later layers. Write a short explanation of why sequential layer processing is often used in practical pruning implementations."}
+{"text": "For a fair compression study, the baseline model and the compressed model should be evaluated under the same prompt format, tokenizer behavior, and output settings. Explain why changing any of these conditions can distort the comparison."}
+{"text": "A model that achieves a lower storage footprint is not automatically easier to deploy. Describe several practical factors, such as device placement, offload strategy, and runtime framework compatibility, that still influence deployment difficulty after compression."}

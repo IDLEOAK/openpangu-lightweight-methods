@@ -1,0 +1,37 @@
+{
+  "experiment_name": "sparsegpt_scaffold",
+  "method": "sparsegpt",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "auto",
+  "torch_dtype": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 4
+  },
+  "evaluation": {
+    "run_generation": true,
+    "run_perplexity": true,
+    "generation_samples": 2,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 256
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "sparsegpt": {
+    "mode": "scaffold",
+    "sparsity": 0.3,
+    "pattern": "unstructured",
+    "block_size": 128,
+    "damp_percent": 0.01
+  },
+  "output_dir": "experiments/results"
+}

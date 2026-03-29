@@ -2,3 +2,5 @@
 .hf_cache/
 __pycache__/
 inference/__pycache__/
+experiments/results/*
+!experiments/results/README.md
