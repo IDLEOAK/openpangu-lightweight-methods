@@ -43,6 +43,33 @@ def load_gptq_runtime_model(model_path: Path, hf_home: Optional[Path]):
     return tokenizer, model, runtime_device, model_dtype
 
 
+def measure_generation_single_device(model, tokenizer, prompts, system_prompt, max_new_tokens, runtime_device):
+    if runtime_device.type != "cuda":
+        return {"skipped": True, "reason": "generation benchmark requires cuda runtime"}
+
+    try:
+        torch.cuda.reset_peak_memory_stats(runtime_device)
+        model.to(runtime_device)
+        model.eval()
+        result = measure_generation(
+            model,
+            tokenizer,
+            prompts,
+            system_prompt,
+            max_new_tokens,
+            runtime_device,
+            "",
+        )
+        result["peak_memory_mb"] = round(torch.cuda.max_memory_allocated(runtime_device) / (1024 * 1024), 2)
+        return result
+    except RuntimeError as exc:
+        return {"skipped": True, "reason": str(exc)}
+    finally:
+        model.cpu()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="GPTQ scaffold for OpenPangu.")
     parser.add_argument("--config", required=True, help="Path to experiment JSON config.")
@@ -214,6 +241,15 @@ def main() -> int:
                 evaluation_batch["attention_mask"],
                 runtime_device,
             )
+        if config["evaluation"].get("run_generation", False):
+            summary["baseline_generation"] = measure_generation_single_device(
+                model,
+                tokenizer,
+                evaluation_texts[: config["evaluation"]["generation_samples"]],
+                config["system_prompt"],
+                config["evaluation"]["max_new_tokens"],
+                runtime_device,
+            )
 
         quant_stats = quantize_openpangu_sequential(
             model,
@@ -240,6 +276,15 @@ def main() -> int:
                 evaluation_batch["attention_mask"],
                 runtime_device,
             )
+        if config["evaluation"].get("run_generation", False):
+            summary["quantized_generation"] = measure_generation_single_device(
+                model,
+                tokenizer,
+                evaluation_texts[: config["evaluation"]["generation_samples"]],
+                config["system_prompt"],
+                config["evaluation"]["max_new_tokens"],
+                runtime_device,
+            )
 
         write_json(run_dir / "quant_stats.json", quant_stats)
         save_dir = resolve_path(run_dir, config["gptq"].get("save_dir"))
@@ -258,9 +303,17 @@ def main() -> int:
     if "baseline_perplexity" in summary:
         print(f"[OK] baseline_perplexity={summary['baseline_perplexity']}")
     if "baseline_generation" in summary:
-        print(f"[OK] baseline_generation_tokens_per_second={summary['baseline_generation']['tokens_per_second']}")
+        if summary["baseline_generation"].get("skipped"):
+            print(f"[WARN] baseline_generation_skipped={summary['baseline_generation']['reason']}")
+        else:
+            print(f"[OK] baseline_generation_tokens_per_second={summary['baseline_generation']['tokens_per_second']}")
     if "quantized_perplexity" in summary:
         print(f"[OK] quantized_perplexity={summary['quantized_perplexity']}")
+    if "quantized_generation" in summary:
+        if summary["quantized_generation"].get("skipped"):
+            print(f"[WARN] quantized_generation_skipped={summary['quantized_generation']['reason']}")
+        else:
+            print(f"[OK] quantized_generation_tokens_per_second={summary['quantized_generation']['tokens_per_second']}")
     if "quant_stats" in summary:
         print(f"[OK] quantized_fraction={summary['quant_stats']['quantized_fraction']}")
     if quant_mode == "scaffold":

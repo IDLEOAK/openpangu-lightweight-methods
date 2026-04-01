@@ -22,7 +22,7 @@ def read_json(path: Path):
 
 def main() -> int:
     sparsegpt_dir = latest_run("sparsegpt", "sparsegpt_port_full34_formal_local")
-    gptq_dir = latest_run("gptq", "gptq_port_full34_formal_local")
+    gptq_dir = latest_run("gptq", "gptq_port_full34_generation")
 
     sparsegpt_summary = read_json(sparsegpt_dir / "summary.json")
     gptq_summary = read_json(gptq_dir / "summary.json")
@@ -62,6 +62,7 @@ def main() -> int:
             "perplexity": gptq_summary["quantized_perplexity"]["perplexity"],
             "elapsed_s": gptq_summary["quant_stats"]["elapsed_s"],
             "peak_memory_mb": gptq_summary["quant_stats"]["peak_memory_mb"],
+            "generation": gptq_summary.get("quantized_generation", {}),
         },
     }
 
@@ -77,6 +78,14 @@ def main() -> int:
     else:
         sparsegpt_generation_text = "未记录"
 
+    gptq_generation = payload["gptq"]["generation"]
+    if gptq_generation.get("skipped"):
+        gptq_generation_text = "跳过（本地 full34 generation OOM）"
+    elif gptq_generation:
+        gptq_generation_text = str(gptq_generation.get("tokens_per_second"))
+    else:
+        gptq_generation_text = "未记录"
+
     markdown = f"""# 当前结果汇总
 
 ## 统一口径
@@ -91,7 +100,7 @@ def main() -> int:
 | --- | --- | ---: | ---: | ---: | --- |
 | Baseline | FP16/BF16 基线 | {baseline_perplexity} | {sparsegpt_summary["baseline_perplexity"]["elapsed_s"]} | {sparsegpt_summary["baseline_perplexity"]["peak_memory_mb"]} | 当前统一评测口径 |
 | SparseGPT | 30% 稀疏，full34 | {payload["sparsegpt"]["perplexity"]} | {payload["sparsegpt"]["elapsed_s"]} | {payload["sparsegpt"]["peak_memory_mb"]} | generation: {sparsegpt_generation_text} |
-| GPTQ | 4-bit, g128, full34 | {payload["gptq"]["perplexity"]} | {payload["gptq"]["elapsed_s"]} | {payload["gptq"]["peak_memory_mb"]} | 当前为 dense 回写路径 |
+| GPTQ | 4-bit, g128, full34 | {payload["gptq"]["perplexity"]} | {payload["gptq"]["elapsed_s"]} | {payload["gptq"]["peak_memory_mb"]} | generation: {gptq_generation_text} |
 
 ## 原始结果目录
 
