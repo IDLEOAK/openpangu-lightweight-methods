@@ -1,40 +1,74 @@
 {
   "baseline": {
-    "perplexity": 453.479042,
+    "perplexity": 444.424158,
     "evaluation_samples": 16,
     "evaluation_tokens": 836,
     "peak_memory_mb": 1587.01
   },
   "sparsegpt": {
-    "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260329-193540-sparsegpt_port_full34_formal_local",
+    "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260402-031540-sparsegpt_port_full34_formal_local",
     "sparsity": 0.3,
     "layer_count": 34,
     "module_count": 238,
     "total_target_params": 6773800960,
-    "zero_params": 2032147825,
+    "zero_params": 2032147863,
     "zero_fraction": 0.300001,
-    "perplexity": 482.22591,
-    "elapsed_s": 623.2251,
+    "perplexity": 469.213927,
+    "elapsed_s": 282.5065,
     "peak_memory_mb": 2466.29,
     "generation": {
-      "skipped": true,
-      "reason": "CUDA out of memory. Tried to allocate 100.00 MiB. GPU 0 has a total capacity of 4.00 GiB of which 0 bytes is free. Of the allocated memory 10.63 GiB is allocated by PyTorch, and 122.73 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+      "sample_count": 2,
+      "avg_latency_s": 0.2201,
+      "avg_generated_tokens": 8.0,
+      "tokens_per_second": 36.3549,
+      "samples": [
+        {
+          "prompt": "请系统说明后训练剪枝在大语言模型压缩中的作用，并从精度、显存、存储和工程可复现性四个维度分析它为什么在毕业设计和工程实践中具有实际价值。",
+          "generated_tokens": 8,
+          "latency_s": 0.2227,
+          "response": "嗯，用户让我系统说明后"
+        },
+        {
+          "prompt": "请解释为什么大语言模型的压缩实验不能只看一个指标。请围绕 perplexity、生成质量、推理速度、峰值显存和权重文件大小展开，说明这些指标之间通常存在什么样的权衡关系。",
+          "generated_tokens": 8,
+          "latency_s": 0.2174,
+          "response": "嗯，用户让我解释为什么大"
+        }
+      ],
+      "peak_memory_mb": 15351.58
     }
   },
   "gptq": {
-    "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260401-211509-gptq_port_full34_generation",
+    "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260402-034750-gptq_port_full34_generation",
     "bits": 4,
     "group_size": 128,
     "layer_count": 34,
     "module_count": 238,
     "total_target_params": 6773800960,
     "quantized_fraction": 1.0,
-    "perplexity": 489.352636,
-    "elapsed_s": 780.6646,
+    "perplexity": 514.224123,
+    "elapsed_s": 366.4168,
     "peak_memory_mb": 2866.3,
     "generation": {
-      "skipped": true,
-      "reason": "CUDA out of memory. Tried to allocate 100.00 MiB. GPU 0 has a total capacity of 4.00 GiB of which 0 bytes is free. Of the allocated memory 10.63 GiB is allocated by PyTorch, and 122.73 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+      "sample_count": 2,
+      "avg_latency_s": 0.2323,
+      "avg_generated_tokens": 8.0,
+      "tokens_per_second": 34.4346,
+      "samples": [
+        {
+          "prompt": "请系统说明后训练剪枝在大语言模型压缩中的作用，并从精度、显存、存储和工程可复现性四个维度分析它为什么在毕业设计和工程实践中具有实际价值。",
+          "generated_tokens": 8,
+          "latency_s": 0.2439,
+          "response": "嗯，用户让我系统说明后"
+        },
+        {
+          "prompt": "请解释为什么大语言模型的压缩实验不能只看一个指标。请围绕 perplexity、生成质量、推理速度、峰值显存和权重文件大小展开，说明这些指标之间通常存在什么样的权衡关系。",
+          "generated_tokens": 8,
+          "latency_s": 0.2207,
+          "response": "嗯，用户让我解释为什么大"
+        }
+      ],
+      "peak_memory_mb": 15351.58
     }
   }
 }

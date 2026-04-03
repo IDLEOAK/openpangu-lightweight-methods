@@ -1,0 +1,51 @@
+{
+  "experiment_name": "awq_port_minimal",
+  "method": "awq",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "",
+  "torch_dtype": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 2,
+    "max_length": 128
+  },
+  "evaluation_data": {
+    "path": "experiments/data/formal_eval_prompts.jsonl",
+    "limit": 4,
+    "max_length": 128
+  },
+  "evaluation": {
+    "run_generation": false,
+    "run_perplexity": true,
+    "run_post_quant_perplexity": true,
+    "generation_samples": 0,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 128
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "awq": {
+    "mode": "sequential_awq",
+    "bits": 4,
+    "group_size": 128,
+    "alpha_grid": 20,
+    "sym": false,
+    "max_calibration_rows": 128,
+    "true_sequential": true,
+    "min_layer": 0,
+    "max_layer": 1,
+    "quantize_only": "",
+    "invert": false,
+    "save_dir": ""
+  },
+  "output_dir": "experiments/results"
+}

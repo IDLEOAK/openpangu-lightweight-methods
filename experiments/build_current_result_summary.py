@@ -74,7 +74,7 @@ def main() -> int:
     if sparsegpt_generation.get("skipped"):
         sparsegpt_generation_text = "跳过（本地 full34 generation OOM）"
     elif sparsegpt_generation:
-        sparsegpt_generation_text = str(sparsegpt_generation.get("tokens_per_second"))
+        sparsegpt_generation_text = f'{sparsegpt_generation.get("tokens_per_second")} tokens/s'
     else:
         sparsegpt_generation_text = "未记录"
 
@@ -82,7 +82,7 @@ def main() -> int:
     if gptq_generation.get("skipped"):
         gptq_generation_text = "跳过（本地 full34 generation OOM）"
     elif gptq_generation:
-        gptq_generation_text = str(gptq_generation.get("tokens_per_second"))
+        gptq_generation_text = f'{gptq_generation.get("tokens_per_second")} tokens/s'
     else:
         gptq_generation_text = "未记录"
 

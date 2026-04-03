@@ -7,3 +7,5 @@ Suggested usage:
 1. keep the generated JSON summaries for thesis tables
 2. do not hand-edit generated files
 3. update `C:\Document\graduationProject\docs\current_work_description.md` and `C:\Document\graduationProject\docs\followup_workflow.md` after each finished stage
+4. downloaded result archives should be stored under `archives/`
+5. the current canonical snapshot is `current_result_summary.json` and `current_result_summary.md`
