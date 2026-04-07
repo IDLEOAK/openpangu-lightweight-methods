@@ -1,0 +1,17 @@
+{
+  "experiment_name": "benchmark_public_mcq_baseline",
+  "method": "benchmark",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "benchmark_data": {
+    "path": "experiments/data/benchmarks/boolq_validation_mcq.jsonl",
+    "limit": 64
+  },
+  "evaluation": {
+    "max_length": 1536,
+    "scoring_mode": "avg_logprob"
+  },
+  "output_dir": "experiments/results"
+}

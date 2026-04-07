@@ -11,6 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from experiments.common.benchmark import apply_benchmark_overrides, evaluate_multiple_choice, load_benchmark_plan
 from experiments.common.config import load_config, resolve_path
 from experiments.common.data import load_text_samples
 from experiments.common.inventory import collect_linear_inventory, select_target_modules
@@ -70,6 +71,31 @@ def measure_generation_single_device(model, tokenizer, prompts, system_prompt, m
             torch.cuda.empty_cache()
 
 
+def evaluate_benchmark_single_device(model, tokenizer, benchmark_plan, system_prompt, runtime_device):
+    if runtime_device.type != "cuda":
+        return {"skipped": True, "reason": "benchmark evaluation requires cuda runtime", "results": []}
+
+    try:
+        model.to(runtime_device)
+        model.eval()
+        return evaluate_multiple_choice(
+            model,
+            tokenizer,
+            benchmark_plan["samples"],
+            system_prompt,
+            runtime_device,
+            "",
+            benchmark_plan["max_length"],
+            benchmark_plan["scoring_mode"],
+        )
+    except RuntimeError as exc:
+        return {"skipped": True, "reason": str(exc), "results": []}
+    finally:
+        model.cpu()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="GPTQ scaffold for OpenPangu.")
     parser.add_argument("--config", required=True, help="Path to experiment JSON config.")
@@ -88,6 +114,14 @@ def main() -> int:
         type=int,
         default=None,
         help="Optional override for calibration_data.max_length and evaluation.perplexity_max_length.",
+    )
+    parser.add_argument("--benchmark-data", default="", help="Optional override for config.benchmark_data.path.")
+    parser.add_argument("--benchmark-limit", type=int, default=None, help="Optional override for config.benchmark_data.limit.")
+    parser.add_argument("--benchmark-max-length", type=int, default=None, help="Optional override for config.benchmark_evaluation.max_length.")
+    parser.add_argument(
+        "--benchmark-scoring-mode",
+        default="",
+        help='Optional override for config.benchmark_evaluation.scoring_mode. Use "avg_logprob" or "total_logprob".',
     )
     args = parser.parse_args()
 
@@ -115,6 +149,13 @@ def main() -> int:
     if args.calibration_max_length is not None:
         config["calibration_data"]["max_length"] = args.calibration_max_length
         config["evaluation"]["perplexity_max_length"] = args.calibration_max_length
+    apply_benchmark_overrides(
+        config,
+        benchmark_data=args.benchmark_data,
+        benchmark_limit=args.benchmark_limit,
+        benchmark_max_length=args.benchmark_max_length,
+        benchmark_scoring_mode=args.benchmark_scoring_mode,
+    )
 
     model_path = resolve_path(REPO_ROOT, config["model_path"])
     hf_home = resolve_path(REPO_ROOT, config.get("hf_home"))
@@ -145,6 +186,7 @@ def main() -> int:
         evaluation_path if evaluation_data_cfg else calibration_path,
         evaluation_data_cfg.get("limit", config["calibration_data"]["limit"]),
     )
+    benchmark_plan = load_benchmark_plan(REPO_ROOT, config)
 
     summary = {
         "method": "gptq",
@@ -187,6 +229,14 @@ def main() -> int:
             ],
         },
     }
+    if benchmark_plan is not None:
+        summary["benchmark_plan"] = {
+            "path": str(benchmark_plan["path"]),
+            "task_slug": benchmark_plan["task_slug"],
+            "sample_count": benchmark_plan["limit"],
+            "max_length": benchmark_plan["max_length"],
+            "scoring_mode": benchmark_plan["scoring_mode"],
+        }
 
     if quant_mode == "scaffold":
         if config["evaluation"]["run_generation"]:
@@ -209,6 +259,24 @@ def main() -> int:
                 runtime_device,
                 device_map,
             )
+        if benchmark_plan is not None:
+            baseline_benchmark = evaluate_benchmark_single_device(
+                model,
+                tokenizer,
+                benchmark_plan,
+                config["system_prompt"],
+                runtime_device,
+            )
+            summary["baseline_benchmark"] = {
+                "sample_count": baseline_benchmark["sample_count"],
+                "evaluated_count": baseline_benchmark["evaluated_count"],
+                "skipped_count": baseline_benchmark["skipped_count"],
+                "correct_count": baseline_benchmark["correct_count"],
+                "accuracy": baseline_benchmark["accuracy"],
+                "scoring_mode": baseline_benchmark["scoring_mode"],
+                "tasks": baseline_benchmark["tasks"],
+            }
+            write_json(run_dir / "baseline_benchmark_predictions.json", baseline_benchmark["results"])
     else:
         if runtime_device.type != "cuda":
             raise RuntimeError("GPTQ sequential quantization currently requires a CUDA runtime device.")
@@ -250,6 +318,24 @@ def main() -> int:
                 config["evaluation"]["max_new_tokens"],
                 runtime_device,
             )
+        if benchmark_plan is not None:
+            baseline_benchmark = evaluate_benchmark_single_device(
+                model,
+                tokenizer,
+                benchmark_plan,
+                config["system_prompt"],
+                runtime_device,
+            )
+            summary["baseline_benchmark"] = {
+                "sample_count": baseline_benchmark["sample_count"],
+                "evaluated_count": baseline_benchmark["evaluated_count"],
+                "skipped_count": baseline_benchmark["skipped_count"],
+                "correct_count": baseline_benchmark["correct_count"],
+                "accuracy": baseline_benchmark["accuracy"],
+                "scoring_mode": baseline_benchmark["scoring_mode"],
+                "tasks": baseline_benchmark["tasks"],
+            }
+            write_json(run_dir / "baseline_benchmark_predictions.json", baseline_benchmark["results"])
 
         quant_stats = quantize_openpangu_sequential(
             model,
@@ -285,6 +371,24 @@ def main() -> int:
                 config["evaluation"]["max_new_tokens"],
                 runtime_device,
             )
+        if benchmark_plan is not None:
+            quantized_benchmark = evaluate_benchmark_single_device(
+                model,
+                tokenizer,
+                benchmark_plan,
+                config["system_prompt"],
+                runtime_device,
+            )
+            summary["quantized_benchmark"] = {
+                "sample_count": quantized_benchmark["sample_count"],
+                "evaluated_count": quantized_benchmark["evaluated_count"],
+                "skipped_count": quantized_benchmark["skipped_count"],
+                "correct_count": quantized_benchmark["correct_count"],
+                "accuracy": quantized_benchmark["accuracy"],
+                "scoring_mode": quantized_benchmark["scoring_mode"],
+                "tasks": quantized_benchmark["tasks"],
+            }
+            write_json(run_dir / "quantized_benchmark_predictions.json", quantized_benchmark.get("results", []))
 
         write_json(run_dir / "quant_stats.json", quant_stats)
         save_dir = resolve_path(run_dir, config["gptq"].get("save_dir"))
@@ -316,6 +420,10 @@ def main() -> int:
             print(f"[OK] quantized_generation_tokens_per_second={summary['quantized_generation']['tokens_per_second']}")
     if "quant_stats" in summary:
         print(f"[OK] quantized_fraction={summary['quant_stats']['quantized_fraction']}")
+    if "baseline_benchmark" in summary:
+        print(f"[OK] baseline_benchmark_accuracy={summary['baseline_benchmark']['accuracy']}")
+    if "quantized_benchmark" in summary:
+        print(f"[OK] quantized_benchmark_accuracy={summary['quantized_benchmark']['accuracy']}")
     if quant_mode == "scaffold":
         print("[NOTE] GPTQ algorithm application is not implemented in scaffold mode; this stage provides config, inventory, baseline, and reporting scaffolding.")
     else:

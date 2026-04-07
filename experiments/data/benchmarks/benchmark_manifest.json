@@ -1,0 +1,188 @@
+{
+  "task_group": "formal_core",
+  "task_names": [
+    "boolq",
+    "hellaswag",
+    "mmlu_college_computer_science",
+    "mmlu_high_school_computer_science",
+    "mmlu_computer_security",
+    "mmlu_machine_learning",
+    "mmlu_formal_logic",
+    "mmlu_college_mathematics",
+    "cmmlu_computer_science",
+    "cmmlu_computer_security",
+    "cmmlu_machine_learning",
+    "cmmlu_high_school_mathematics",
+    "cmmlu_college_mathematics",
+    "ceval_college_programming",
+    "ceval_computer_network"
+  ],
+  "max_samples_per_task": 64,
+  "exports": [
+    {
+      "task_name": "boolq",
+      "source_dataset": "boolq",
+      "config": "",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\boolq_validation_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "hellaswag",
+      "source_dataset": "hellaswag",
+      "config": "",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\hellaswag_validation_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "mmlu_college_computer_science",
+      "source_dataset": "cais/mmlu",
+      "config": "college_computer_science",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\mmlu_college_computer_science_validation_mcq.jsonl",
+      "row_count": 11
+    },
+    {
+      "task_name": "mmlu_high_school_computer_science",
+      "source_dataset": "cais/mmlu",
+      "config": "high_school_computer_science",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\mmlu_high_school_computer_science_validation_mcq.jsonl",
+      "row_count": 9
+    },
+    {
+      "task_name": "mmlu_computer_security",
+      "source_dataset": "cais/mmlu",
+      "config": "computer_security",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\mmlu_computer_security_validation_mcq.jsonl",
+      "row_count": 11
+    },
+    {
+      "task_name": "mmlu_machine_learning",
+      "source_dataset": "cais/mmlu",
+      "config": "machine_learning",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\mmlu_machine_learning_validation_mcq.jsonl",
+      "row_count": 11
+    },
+    {
+      "task_name": "mmlu_formal_logic",
+      "source_dataset": "cais/mmlu",
+      "config": "formal_logic",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\mmlu_formal_logic_validation_mcq.jsonl",
+      "row_count": 14
+    },
+    {
+      "task_name": "mmlu_college_mathematics",
+      "source_dataset": "cais/mmlu",
+      "config": "college_mathematics",
+      "split": "validation",
+      "language": "en",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\mmlu_college_mathematics_validation_mcq.jsonl",
+      "row_count": 11
+    },
+    {
+      "task_name": "cmmlu_computer_science",
+      "source_dataset": "svjack/cmmlu",
+      "config": "",
+      "split": "train",
+      "language": "zh",
+      "subject_key": "task",
+      "subject_value": "computer_science",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\cmmlu_computer_science_train_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "cmmlu_computer_security",
+      "source_dataset": "svjack/cmmlu",
+      "config": "",
+      "split": "train",
+      "language": "zh",
+      "subject_key": "task",
+      "subject_value": "computer_security",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\cmmlu_computer_security_train_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "cmmlu_machine_learning",
+      "source_dataset": "svjack/cmmlu",
+      "config": "",
+      "split": "train",
+      "language": "zh",
+      "subject_key": "task",
+      "subject_value": "machine_learning",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\cmmlu_machine_learning_train_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "cmmlu_high_school_mathematics",
+      "source_dataset": "svjack/cmmlu",
+      "config": "",
+      "split": "train",
+      "language": "zh",
+      "subject_key": "task",
+      "subject_value": "high_school_mathematics",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\cmmlu_high_school_mathematics_train_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "cmmlu_college_mathematics",
+      "source_dataset": "svjack/cmmlu",
+      "config": "",
+      "split": "train",
+      "language": "zh",
+      "subject_key": "task",
+      "subject_value": "college_mathematics",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\cmmlu_college_mathematics_train_mcq.jsonl",
+      "row_count": 64
+    },
+    {
+      "task_name": "ceval_college_programming",
+      "source_dataset": "ceval/ceval-exam",
+      "config": "college_programming",
+      "split": "val",
+      "language": "zh",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\ceval_college_programming_val_mcq.jsonl",
+      "row_count": 37
+    },
+    {
+      "task_name": "ceval_computer_network",
+      "source_dataset": "ceval/ceval-exam",
+      "config": "computer_network",
+      "split": "val",
+      "language": "zh",
+      "subject_key": "",
+      "subject_value": "",
+      "output_path": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\data\\benchmarks\\ceval_computer_network_val_mcq.jsonl",
+      "row_count": 19
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "experiment_name": "awq_port_full34_benchmark",
+  "method": "awq",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 4,
+    "max_length": 128
+  },
+  "evaluation_data": {
+    "path": "experiments/data/formal_eval_prompts.jsonl",
+    "limit": 16,
+    "max_length": 192
+  },
+  "evaluation": {
+    "run_generation": false,
+    "run_perplexity": false,
+    "run_post_quant_perplexity": false,
+    "generation_samples": 2,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 192
+  },
+  "benchmark_data": {
+    "path": "experiments/data/benchmarks/boolq_validation_mcq.jsonl",
+    "limit": 64
+  },
+  "benchmark_evaluation": {
+    "max_length": 1536,
+    "scoring_mode": "avg_logprob"
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "awq": {
+    "mode": "sequential_quant",
+    "bits": 4,
+    "group_size": 128,
+    "alpha_grid": 20,
+    "sym": false,
+    "min_layer": 0,
+    "max_layer": 34,
+    "quantize_only": "",
+    "invert": false,
+    "save_dir": ""
+  },
+  "output_dir": "experiments/results"
+}

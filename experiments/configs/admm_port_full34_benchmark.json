@@ -1,0 +1,55 @@
+{
+  "experiment_name": "admm_port_full34_benchmark",
+  "method": "admm",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 4,
+    "max_length": 128
+  },
+  "evaluation_data": {
+    "path": "experiments/data/formal_eval_prompts.jsonl",
+    "limit": 16,
+    "max_length": 192
+  },
+  "evaluation": {
+    "run_generation": false,
+    "run_perplexity": false,
+    "run_post_prune_perplexity": false,
+    "generation_samples": 2,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 192
+  },
+  "benchmark_data": {
+    "path": "experiments/data/benchmarks/boolq_validation_mcq.jsonl",
+    "limit": 64
+  },
+  "benchmark_evaluation": {
+    "max_length": 1536,
+    "scoring_mode": "avg_logprob"
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "admm": {
+    "mode": "sequential_prune",
+    "sparsity": 0.3,
+    "min_layer": 0,
+    "max_layer": 34,
+    "update_steps": 4,
+    "sparsify_steps": 2,
+    "rho": 0.05,
+    "ridge": 0.01,
+    "gradual": true,
+    "save_dir": ""
+  },
+  "output_dir": "experiments/results"
+}

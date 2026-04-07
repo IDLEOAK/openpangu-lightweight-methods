@@ -7,6 +7,7 @@ This directory contains the shared scaffold for post-training pruning and quanti
 - `configs/`: JSON experiment configs
 - `data/`: small prompt/calibration samples
 - `common/`: shared runtime, data, reporting, and metric helpers
+- `benchmark/`: public benchmark evaluation entrypoints
 - `sparsegpt/`: SparseGPT-oriented experiment entrypoints
 - `admm/`: ADMM pruning-oriented experiment entrypoints
 - `llm_bip/`: LLM-BIP structured pruning-oriented experiment entrypoints
@@ -32,6 +33,7 @@ It now provides:
 9. AWQ sequential quantization for OpenPangu
 10. SmoothQuant-inspired sequential quantization for OpenPangu
 11. run manifest and JSON result export
+12. public multiple-choice benchmark scaffold for baseline and reloadable model directories
 
 Current project-level conclusions:
 
@@ -60,4 +62,19 @@ C:\Tools\anaconda3\python.exe experiments\admm\run_admm_scaffold.py --config exp
 C:\Tools\anaconda3\python.exe experiments\awq\run_awq_scaffold.py --config experiments\configs\awq_port_minimal.json
 C:\Tools\anaconda3\python.exe experiments\llm_bip\run_llm_bip_scaffold.py --config experiments\configs\llm_bip_port_minimal.json
 C:\Tools\anaconda3\python.exe experiments\smoothquant\run_smoothquant_scaffold.py --config experiments\configs\smoothquant_port_minimal.json
+```
+
+For the first public benchmark scaffold, use:
+
+```powershell
+C:\Tools\anaconda3\python.exe experiments\data\prepare_benchmark_sets.py --max-samples-per-task 128
+C:\Tools\anaconda3\python.exe experiments\benchmark\run_benchmark_scaffold.py --config experiments\configs\benchmark_public_mcq_baseline.json --benchmark-data experiments\data\benchmarks\boolq_validation_mcq.jsonl
+```
+
+For the formal benchmark task set and method batch runner, use:
+
+```powershell
+C:\Tools\anaconda3\python.exe experiments\data\prepare_benchmark_sets.py --tasks formal_core --max-samples-per-task 64
+bash experiments/run_formal_benchmark_batch.sh experiments/data/benchmarks /mnt/env/openpangu-publiceval-python.sh 64
+C:\Tools\anaconda3\python.exe experiments\build_benchmark_result_summary.py
 ```
