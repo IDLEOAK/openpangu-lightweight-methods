@@ -240,6 +240,10 @@ def main() -> int:
             "sample_count": benchmark_plan["limit"],
             "max_length": benchmark_plan["max_length"],
             "scoring_mode": benchmark_plan["scoring_mode"],
+            "apply_chat_template": benchmark_plan.get("apply_chat_template", True),
+            "prompt_style": benchmark_plan.get("prompt_style"),
+            "prompt_template_source": benchmark_plan.get("prompt_template_source"),
+            "few_shot_count": benchmark_plan.get("few_shot_count"),
         }
 
     if sparse_mode == "scaffold":

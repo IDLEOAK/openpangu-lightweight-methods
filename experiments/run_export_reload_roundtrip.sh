@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [ $# -lt 1 ]; then
-  echo "Usage: bash experiments/run_stage_b_export_reload.sh <method> [python_bin]"
+  echo "Usage: bash experiments/run_export_reload_roundtrip.sh <method> [python_bin]"
   echo "Methods: sparsegpt gptq admm awq smoothquant"
   exit 1
 fi
@@ -13,27 +13,27 @@ KEEP_DENSE_EXPORT="${KEEP_DENSE_EXPORT:-0}"
 
 case "$METHOD" in
   sparsegpt)
-    EXPORT_CONFIG="experiments/configs/sparsegpt_port_full34_stageb_export.json"
+    EXPORT_CONFIG="experiments/configs/sparsegpt_port_full34_export_bundle.json"
     RUNNER="experiments/sparsegpt/run_sparsegpt_scaffold.py"
     RESULT_DIR="experiments/results/sparsegpt"
     ;;
   gptq)
-    EXPORT_CONFIG="experiments/configs/gptq_port_full34_stageb_export.json"
+    EXPORT_CONFIG="experiments/configs/gptq_port_full34_export_bundle.json"
     RUNNER="experiments/gptq/run_gptq_scaffold.py"
     RESULT_DIR="experiments/results/gptq"
     ;;
   admm)
-    EXPORT_CONFIG="experiments/configs/admm_port_full34_stageb_export.json"
+    EXPORT_CONFIG="experiments/configs/admm_port_full34_export_bundle.json"
     RUNNER="experiments/admm/run_admm_scaffold.py"
     RESULT_DIR="experiments/results/admm"
     ;;
   awq)
-    EXPORT_CONFIG="experiments/configs/awq_port_full34_stageb_export.json"
+    EXPORT_CONFIG="experiments/configs/awq_port_full34_export_bundle.json"
     RUNNER="experiments/awq/run_awq_scaffold.py"
     RESULT_DIR="experiments/results/awq"
     ;;
   smoothquant)
-    EXPORT_CONFIG="experiments/configs/smoothquant_port_full34_stageb_export.json"
+    EXPORT_CONFIG="experiments/configs/smoothquant_port_full34_export_bundle.json"
     RUNNER="experiments/smoothquant/run_smoothquant_scaffold.py"
     RESULT_DIR="experiments/results/smoothquant"
     ;;
@@ -75,14 +75,14 @@ fi
 
 echo "[RUN][$METHOD] b1_reload_verify"
 "$PYTHON_BIN" experiments/export_reload/run_reload_verification.py \
-  --config experiments/configs/reload_verify_stageb_minimal.json \
+  --config experiments/configs/reload_verification_minimal.json \
   --model-path "$EXPORTED_MODEL_DIR" \
   --source-summary "$RUN_DIR/summary.json" \
   --experiment-name-suffix "${METHOD}_$(basename "$RUN_DIR")"
 
 echo "[RUN][$METHOD] b2_compressed_verify"
 "$PYTHON_BIN" experiments/export_reload/run_compressed_artifact_verification.py \
-  --config experiments/configs/reload_verify_stageb_minimal.json \
+  --config experiments/configs/reload_verification_minimal.json \
   --base-model-path . \
   --artifact-dir "$COMPRESSED_ARTIFACT_DIR" \
   --source-summary "$RUN_DIR/summary.json" \

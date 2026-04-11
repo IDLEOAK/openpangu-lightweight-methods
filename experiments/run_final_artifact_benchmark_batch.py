@@ -23,9 +23,9 @@ def latest_run(output_root: Path, method: str, experiment_name: str, task_slug: 
 def main() -> int:
     python_bin = sys.argv[1] if len(sys.argv) > 1 else sys.executable
 
-    task_manifest = read_json(REPO_ROOT / "experiments" / "configs" / "stage_c_task_manifest.json")
-    method_manifest = read_json(REPO_ROOT / "experiments" / "configs" / "stage_c_artifact_manifest.json")
-    benchmark_config = REPO_ROOT / "experiments" / "configs" / "stage_c_benchmark_base.json"
+    task_manifest = read_json(REPO_ROOT / "experiments" / "configs" / "final_artifact_benchmark_tasks.json")
+    method_manifest = read_json(REPO_ROOT / "experiments" / "configs" / "final_artifact_benchmark_models.json")
+    benchmark_config = REPO_ROOT / "experiments" / "configs" / "final_artifact_benchmark_base.json"
 
     process_root = Path(method_manifest["process_results_root"])
     final_results_root = (REPO_ROOT / method_manifest["final_results_root"]).resolve()
@@ -38,7 +38,7 @@ def main() -> int:
     methods = {"baseline": None}
     methods.update({name: info["artifact_dir"] for name, info in method_manifest["methods"].items()})
 
-    runner = REPO_ROOT / "experiments" / "benchmark" / "run_stage_c_model_benchmark.py"
+    runner = REPO_ROOT / "experiments" / "benchmark" / "run_final_artifact_model_benchmark.py"
     for task in task_manifest["tasks"]:
         benchmark_data = task["benchmark_data"]
         task_slug = Path(benchmark_data).stem
@@ -67,7 +67,7 @@ def main() -> int:
                 shutil.rmtree(dst_run)
             shutil.copytree(src_run, dst_run)
 
-    summary_builder = REPO_ROOT / "experiments" / "build_stage_c_benchmark_summary.py"
+    summary_builder = REPO_ROOT / "experiments" / "build_final_artifact_benchmark_summary.py"
     subprocess.run([python_bin, str(summary_builder)], cwd=REPO_ROOT, check=True)
     return 0
 

@@ -11,7 +11,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from experiments.common.benchmark import evaluate_multiple_choice, load_multiple_choice_samples
+from experiments.common.benchmark import (
+    evaluate_multiple_choice,
+    extract_benchmark_metadata,
+    load_multiple_choice_samples,
+)
 from experiments.common.config import load_config, resolve_path
 from experiments.common.data import load_text_samples
 from experiments.common.openpangu_sequential import build_calibration_batch, evaluate_openpangu_perplexity_sequential
@@ -93,6 +97,7 @@ def main() -> int:
     tokenizer, model, runtime_device, model_dtype = load_tokenizer_and_model(model_path, device_map, hf_home)
     evaluation_texts = load_text_samples(evaluation_path, int(config["evaluation_data"].get("limit", 0)))
     benchmark_samples = load_multiple_choice_samples(benchmark_path, int(config["benchmark_data"].get("limit", 0)))
+    benchmark_metadata = extract_benchmark_metadata(benchmark_samples)
     benchmark_task_slug = benchmark_path.stem
 
     evaluation_batch = build_calibration_batch(
@@ -127,6 +132,7 @@ def main() -> int:
             "sample_count": len(benchmark_samples),
             "max_length": int(config["benchmark_evaluation"]["max_length"]),
             "scoring_mode": config["benchmark_evaluation"].get("scoring_mode", "avg_logprob"),
+            **benchmark_metadata,
         },
     }
 

@@ -1,6 +1,6 @@
 {
-  "experiment_name": "gptq_port_full34_stageb_export",
-  "method": "gptq",
+  "experiment_name": "sparsegpt_port_full34_export_bundle",
+  "method": "sparsegpt",
   "model_path": ".",
   "hf_home": ".hf_cache",
   "device_map": "",
@@ -19,7 +19,7 @@
   "evaluation": {
     "run_generation": true,
     "run_perplexity": true,
-    "run_post_quant_perplexity": true,
+    "run_post_prune_perplexity": true,
     "generation_samples": 2,
     "max_new_tokens": 8,
     "perplexity_max_length": 192
@@ -33,19 +33,18 @@
       "lm_head"
     ]
   },
-  "gptq": {
-    "mode": "sequential_quant",
-    "bits": 4,
-    "group_size": 128,
-    "desc_act": false,
-    "damp_percent": 0.01,
+  "sparsegpt": {
+    "mode": "sequential_prune",
+    "sparsity": 0.3,
+    "pattern": "unstructured",
     "block_size": 128,
+    "damp_percent": 0.01,
+    "prunen": 0,
+    "prunem": 0,
     "true_sequential": true,
-    "static_groups": false,
-    "sym": false,
     "min_layer": 0,
     "max_layer": 34,
-    "quantize_only": "",
+    "prune_only": "",
     "invert": false,
     "save_dir": "exported_model",
     "compressed_artifact_dir": "compressed_artifact"

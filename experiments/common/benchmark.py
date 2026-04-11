@@ -21,12 +21,26 @@ def load_multiple_choice_samples(data_path: Path, limit: int = 0) -> List[Dict]:
                 raise ValueError(f"Invalid benchmark record in {data_path}: missing prompt/choices/answer_index")
             record["choices"] = [str(choice) for choice in record["choices"]]
             record["answer_index"] = int(record["answer_index"])
+            record["apply_chat_template"] = bool(record.get("apply_chat_template", True))
             record.setdefault("task_name", data_path.stem)
             record.setdefault("sample_id", f"{record['task_name']}_{len(samples):06d}")
             samples.append(record)
             if limit and len(samples) >= limit:
                 break
     return samples
+
+
+def extract_benchmark_metadata(samples: List[Dict]) -> Dict:
+    if not samples:
+        return {}
+    first = samples[0]
+    metadata = {
+        "apply_chat_template": bool(first.get("apply_chat_template", True)),
+    }
+    for key in ("prompt_style", "prompt_template_source", "few_shot_count", "subject_name"):
+        if key in first:
+            metadata[key] = first[key]
+    return metadata
 
 
 def apply_benchmark_overrides(
@@ -56,7 +70,7 @@ def load_benchmark_plan(base_dir: Path, config: Dict) -> Optional[Dict]:
 
     samples = load_multiple_choice_samples(benchmark_path, int(benchmark_cfg.get("limit", 0)))
     benchmark_eval_cfg = config.get("benchmark_evaluation", {})
-    return {
+    plan = {
         "path": benchmark_path,
         "task_slug": benchmark_path.stem,
         "samples": samples,
@@ -64,9 +78,18 @@ def load_benchmark_plan(base_dir: Path, config: Dict) -> Optional[Dict]:
         "max_length": int(benchmark_eval_cfg.get("max_length", 1536)),
         "scoring_mode": benchmark_eval_cfg.get("scoring_mode", "avg_logprob"),
     }
+    plan.update(extract_benchmark_metadata(samples))
+    return plan
 
 
-def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
+def render_chat_prompt(
+    tokenizer,
+    system_prompt: str,
+    user_prompt: str,
+    apply_chat_template: bool = True,
+) -> str:
+    if not apply_chat_template:
+        return user_prompt
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
@@ -141,6 +164,7 @@ def evaluate_multiple_choice(
     device_map: str,
     max_length: int,
     scoring_mode: str = "avg_logprob",
+    apply_chat_template: bool = True,
 ) -> Dict:
     if scoring_mode not in {"avg_logprob", "total_logprob"}:
         raise ValueError(f"Unsupported scoring_mode: {scoring_mode}")
@@ -149,7 +173,12 @@ def evaluate_multiple_choice(
     task_stats = defaultdict(lambda: {"correct": 0, "sample_count": 0, "skipped": 0})
 
     for sample in samples:
-        rendered_prompt = render_chat_prompt(tokenizer, system_prompt, str(sample["prompt"]))
+        rendered_prompt = render_chat_prompt(
+            tokenizer,
+            system_prompt,
+            str(sample["prompt"]),
+            bool(sample.get("apply_chat_template", apply_chat_template)),
+        )
         choice_scores = []
         for choice_index, choice in enumerate(sample["choices"]):
             score = score_choice(
@@ -199,6 +228,7 @@ def evaluate_multiple_choice(
                 "scoring_mode": scoring_mode,
                 "choices": sample["choices"],
                 "choice_scores": choice_scores,
+                "apply_chat_template": bool(sample.get("apply_chat_template", apply_chat_template)),
             }
         )
 

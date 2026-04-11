@@ -2,8 +2,8 @@
 
 ## Goal
 
-This runbook covers the repository's internal `stage_b` export and reload flow.
-For external writing, thesis wording, and defense narration, it is better described as:
+This runbook covers the repository's export + reload roundtrip flow.
+For external writing, thesis wording, and defense narration, use:
 
 1. export a reloadable model
 2. export the final compressed artifact
@@ -11,8 +11,8 @@ For external writing, thesis wording, and defense narration, it is better descri
 
 The internal flow is still split into two sub-steps:
 
-1. `B1`: export a reloadable Hugging Face checkpoint and verify it under the same evaluation path
-2. `B2`: export the final compressed storage artifact and verify it on top of the base dense model
+1. reloadable checkpoint verification
+2. compressed-artifact verification
 
 ## What Each Sub-Step Produces
 
@@ -37,9 +37,9 @@ For each method run, this flow now writes:
    - includes `compressed_artifact_format`
    - includes `compressed_artifact_info.total_size_bytes`
 2. `exported_model/`
-   - the B1 reload target directory
+   - the reloadable-checkpoint target directory
 3. `compressed_artifact/`
-   - the B2 final compressed storage artifact
+   - the final compressed storage artifact
 4. a separate reload verification run under `experiments/results/reload_verify/`
    - includes `reloaded_perplexity`
    - includes `reloaded_benchmark`
@@ -52,11 +52,11 @@ For each method run, this flow now writes:
 Run from the repository root:
 
 ```bash
-bash experiments/run_stage_b_export_reload.sh sparsegpt /mnt/env/openpangu-publiceval-python.sh
-bash experiments/run_stage_b_export_reload.sh gptq /mnt/env/openpangu-publiceval-python.sh
-bash experiments/run_stage_b_export_reload.sh admm /mnt/env/openpangu-publiceval-python.sh
-bash experiments/run_stage_b_export_reload.sh awq /mnt/env/openpangu-publiceval-python.sh
-bash experiments/run_stage_b_export_reload.sh smoothquant /mnt/env/openpangu-publiceval-python.sh
+bash experiments/run_export_reload_roundtrip.sh sparsegpt /mnt/env/openpangu-publiceval-python.sh
+bash experiments/run_export_reload_roundtrip.sh gptq /mnt/env/openpangu-publiceval-python.sh
+bash experiments/run_export_reload_roundtrip.sh admm /mnt/env/openpangu-publiceval-python.sh
+bash experiments/run_export_reload_roundtrip.sh awq /mnt/env/openpangu-publiceval-python.sh
+bash experiments/run_export_reload_roundtrip.sh smoothquant /mnt/env/openpangu-publiceval-python.sh
 ```
 
 Recommended order:

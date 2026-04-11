@@ -79,8 +79,8 @@ def build_aggregates(tasks_payload: dict, task_language: dict, methods: list[str
 
 def main() -> int:
     experiments_root = Path(__file__).resolve().parent
-    task_manifest = read_json(experiments_root / "configs" / "stage_c_task_manifest.json")
-    method_manifest = read_json(experiments_root / "configs" / "stage_c_artifact_manifest.json")
+    task_manifest = read_json(experiments_root / "configs" / "final_artifact_benchmark_tasks.json")
+    method_manifest = read_json(experiments_root / "configs" / "final_artifact_benchmark_models.json")
     results_root = Path(method_manifest["final_results_root"]).resolve()
     summary_root = Path(method_manifest["final_summary_root"]).resolve()
     summary_root.mkdir(parents=True, exist_ok=True)
@@ -111,8 +111,8 @@ def main() -> int:
 
     payload["aggregates"] = build_aggregates(payload["tasks"], task_language, methods)
 
-    summary_json = summary_root / "stage_c_benchmark_summary.json"
-    summary_md = summary_root / "stage_c_benchmark_summary.md"
+    summary_json = summary_root / "final_artifact_benchmark_summary.json"
+    summary_md = summary_root / "final_artifact_benchmark_summary.md"
     summary_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     lines = ["# Final Artifact Benchmark Summary", ""]

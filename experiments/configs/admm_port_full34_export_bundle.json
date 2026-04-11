@@ -1,6 +1,6 @@
 {
-  "experiment_name": "awq_port_full34_stageb_export",
-  "method": "awq",
+  "experiment_name": "admm_port_full34_export_bundle",
+  "method": "admm",
   "model_path": ".",
   "hf_home": ".hf_cache",
   "device_map": "",
@@ -19,7 +19,7 @@
   "evaluation": {
     "run_generation": true,
     "run_perplexity": true,
-    "run_post_quant_perplexity": true,
+    "run_post_prune_perplexity": true,
     "generation_samples": 2,
     "max_new_tokens": 8,
     "perplexity_max_length": 192
@@ -33,17 +33,18 @@
       "lm_head"
     ]
   },
-  "awq": {
-    "mode": "sequential_awq",
-    "bits": 4,
-    "group_size": 128,
-    "alpha_grid": 20,
-    "sym": false,
-    "max_calibration_rows": 256,
+  "admm": {
+    "mode": "sequential_prune",
+    "sparsity": 0.3,
+    "update_steps": 20,
+    "sparsify_steps": 15,
+    "rho": 1.0,
+    "ridge": 0.1,
+    "gradual": true,
     "true_sequential": true,
     "min_layer": 0,
     "max_layer": 34,
-    "quantize_only": "",
+    "prune_only": "",
     "invert": false,
     "save_dir": "exported_model",
     "compressed_artifact_dir": "compressed_artifact"

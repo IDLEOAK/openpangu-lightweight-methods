@@ -9,7 +9,11 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from experiments.common.benchmark import evaluate_multiple_choice, load_multiple_choice_samples
+from experiments.common.benchmark import (
+    evaluate_multiple_choice,
+    extract_benchmark_metadata,
+    load_multiple_choice_samples,
+)
 from experiments.common.config import load_config, resolve_path
 from experiments.common.reporting import create_run_dir, write_json
 from experiments.common.runtime import load_tokenizer_and_model
@@ -50,6 +54,7 @@ def main() -> int:
     device_map = config.get("device_map", "").strip()
 
     samples = load_multiple_choice_samples(benchmark_path, int(config["benchmark_data"].get("limit", 0)))
+    sample_metadata = extract_benchmark_metadata(samples)
     task_slug = benchmark_path.stem
     run_dir = create_run_dir(output_root, "benchmark", f"{config['experiment_name']}_{task_slug}")
     write_json(run_dir / "config_snapshot.json", config)
@@ -71,6 +76,7 @@ def main() -> int:
             "limit": len(samples),
             "max_length": int(config["evaluation"]["max_length"]),
             "scoring_mode": config["evaluation"].get("scoring_mode", "avg_logprob"),
+            **sample_metadata,
         },
     }
 

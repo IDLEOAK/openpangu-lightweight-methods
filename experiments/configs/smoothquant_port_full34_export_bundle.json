@@ -1,5 +1,5 @@
 {
-  "experiment_name": "smoothquant_port_full34_stageb_export",
+  "experiment_name": "smoothquant_port_full34_export_bundle",
   "method": "smoothquant",
   "model_path": ".",
   "hf_home": ".hf_cache",

@@ -1,7 +1,7 @@
 {
-  "process_results_root": "/root/stage_c_work/stage_c_results",
-  "final_results_root": "experiments/results/stage_c_benchmark",
-  "final_summary_root": "/mnt/results/stage_c",
+  "process_results_root": "/root/final_artifact_benchmark_work/results",
+  "final_results_root": "experiments/results/final_artifact_benchmark",
+  "final_summary_root": "/mnt/results/final_artifact_benchmark",
   "methods": {
     "sparsegpt": {
       "artifact_dir": "experiments/results/sparsegpt/20260407-124200-sparsegpt_port_full34_stageb_export/compressed_artifact"
