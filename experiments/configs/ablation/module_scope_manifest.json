@@ -1,0 +1,130 @@
+{
+  "study_name": "module_scope",
+  "category": "module",
+  "axis": "module_scope",
+  "results_root_suggestion": "/mnt/results/ablation/module",
+  "variants": [
+    {
+      "variant_id": "admm_full",
+      "label": "ADMM full",
+      "method": "admm",
+      "axis_value": "attention+mlp",
+      "artifact_method_label": "admm_full",
+      "result_subdir": "admm_full",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/admm_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/admm_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/admm_port_full34_cnpublic_eval.json",
+      "module_selection_overrides": {
+        "include_groups": [
+          "attention",
+          "mlp"
+        ],
+        "exclude_patterns": [
+          "lm_head"
+        ]
+      }
+    },
+    {
+      "variant_id": "admm_attention_only",
+      "label": "ADMM attention-only",
+      "method": "admm",
+      "axis_value": "attention-only",
+      "artifact_method_label": "admm_attention_only",
+      "result_subdir": "admm_attention_only",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/admm_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/admm_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/admm_port_full34_cnpublic_eval.json",
+      "module_selection_overrides": {
+        "include_groups": [
+          "attention"
+        ],
+        "exclude_patterns": [
+          "lm_head"
+        ]
+      }
+    },
+    {
+      "variant_id": "admm_mlp_only",
+      "label": "ADMM mlp-only",
+      "method": "admm",
+      "axis_value": "mlp-only",
+      "artifact_method_label": "admm_mlp_only",
+      "result_subdir": "admm_mlp_only",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/admm_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/admm_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/admm_port_full34_cnpublic_eval.json",
+      "module_selection_overrides": {
+        "include_groups": [
+          "mlp"
+        ],
+        "exclude_patterns": [
+          "lm_head"
+        ]
+      }
+    },
+    {
+      "variant_id": "awq_full",
+      "label": "AWQ full",
+      "method": "awq",
+      "axis_value": "attention+mlp",
+      "artifact_method_label": "awq_full",
+      "result_subdir": "awq_full",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "module_selection_overrides": {
+        "include_groups": [
+          "attention",
+          "mlp"
+        ],
+        "exclude_patterns": [
+          "lm_head"
+        ]
+      }
+    },
+    {
+      "variant_id": "awq_attention_only",
+      "label": "AWQ attention-only",
+      "method": "awq",
+      "axis_value": "attention-only",
+      "artifact_method_label": "awq_attention_only",
+      "result_subdir": "awq_attention_only",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "module_selection_overrides": {
+        "include_groups": [
+          "attention"
+        ],
+        "exclude_patterns": [
+          "lm_head"
+        ]
+      }
+    },
+    {
+      "variant_id": "awq_mlp_only",
+      "label": "AWQ mlp-only",
+      "method": "awq",
+      "axis_value": "mlp-only",
+      "artifact_method_label": "awq_mlp_only",
+      "result_subdir": "awq_mlp_only",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "module_selection_overrides": {
+        "include_groups": [
+          "mlp"
+        ],
+        "exclude_patterns": [
+          "lm_head"
+        ]
+      }
+    }
+  ]
+}

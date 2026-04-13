@@ -1,0 +1,98 @@
+{
+  "study_name": "pruning_sparsity",
+  "category": "pruning",
+  "axis": "sparsity",
+  "results_root_suggestion": "/mnt/results/ablation/pruning",
+  "variants": [
+    {
+      "variant_id": "sparsegpt_s020",
+      "label": "SparseGPT s=0.2",
+      "method": "sparsegpt",
+      "axis_value": 0.2,
+      "artifact_method_label": "sparsegpt_s020",
+      "result_subdir": "sparsegpt_s020",
+      "smoke_config": "experiments/configs/sparsegpt_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s020_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s020_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s020_cnpublic_eval.json",
+      "method_overrides": {
+        "sparsity": 0.2
+      }
+    },
+    {
+      "variant_id": "sparsegpt_s030",
+      "label": "SparseGPT s=0.3",
+      "method": "sparsegpt",
+      "axis_value": 0.3,
+      "artifact_method_label": "sparsegpt_s030",
+      "result_subdir": "sparsegpt_s030",
+      "smoke_config": "experiments/configs/sparsegpt_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s030_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s030_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s030_cnpublic_eval.json",
+      "method_overrides": {
+        "sparsity": 0.3
+      }
+    },
+    {
+      "variant_id": "sparsegpt_s040",
+      "label": "SparseGPT s=0.4",
+      "method": "sparsegpt",
+      "axis_value": 0.4,
+      "artifact_method_label": "sparsegpt_s040",
+      "result_subdir": "sparsegpt_s040",
+      "smoke_config": "experiments/configs/sparsegpt_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s040_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s040_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/pruning/sparsegpt_port_full34_s040_cnpublic_eval.json",
+      "method_overrides": {
+        "sparsity": 0.4
+      }
+    },
+    {
+      "variant_id": "admm_s020",
+      "label": "ADMM s=0.2",
+      "method": "admm",
+      "axis_value": 0.2,
+      "artifact_method_label": "admm_s020",
+      "result_subdir": "admm_s020",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/pruning/admm_port_full34_s020_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/pruning/admm_port_full34_s020_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/pruning/admm_port_full34_s020_cnpublic_eval.json",
+      "method_overrides": {
+        "sparsity": 0.2
+      }
+    },
+    {
+      "variant_id": "admm_s030",
+      "label": "ADMM s=0.3",
+      "method": "admm",
+      "axis_value": 0.3,
+      "artifact_method_label": "admm_s030",
+      "result_subdir": "admm_s030",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/pruning/admm_port_full34_s030_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/pruning/admm_port_full34_s030_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/pruning/admm_port_full34_s030_cnpublic_eval.json",
+      "method_overrides": {
+        "sparsity": 0.3
+      }
+    },
+    {
+      "variant_id": "admm_s040",
+      "label": "ADMM s=0.4",
+      "method": "admm",
+      "axis_value": 0.4,
+      "artifact_method_label": "admm_s040",
+      "result_subdir": "admm_s040",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/pruning/admm_port_full34_s040_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/pruning/admm_port_full34_s040_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/pruning/admm_port_full34_s040_cnpublic_eval.json",
+      "method_overrides": {
+        "sparsity": 0.4
+      }
+    }
+  ]
+}

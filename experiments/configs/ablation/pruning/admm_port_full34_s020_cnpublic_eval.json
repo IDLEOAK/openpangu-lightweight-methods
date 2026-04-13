@@ -1,0 +1,53 @@
+{
+  "experiment_name": "admm_port_full34_s020_cnpublic_eval",
+  "method": "admm",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "",
+  "torch_dtype": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 4,
+    "max_length": 128
+  },
+  "evaluation_data": {
+    "path": "experiments/data/chinesewebtext2_test_public_eval.jsonl",
+    "limit": 512,
+    "max_length": 192,
+    "raw_text": true
+  },
+  "evaluation": {
+    "run_generation": false,
+    "run_perplexity": true,
+    "run_post_prune_perplexity": true,
+    "generation_samples": 0,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 192
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "admm": {
+    "mode": "sequential_prune",
+    "sparsity": 0.2,
+    "update_steps": 20,
+    "sparsify_steps": 15,
+    "rho": 1.0,
+    "ridge": 0.1,
+    "gradual": true,
+    "true_sequential": true,
+    "min_layer": 0,
+    "max_layer": 34,
+    "prune_only": "",
+    "invert": false,
+    "save_dir": ""
+  },
+  "output_dir": "experiments/results"
+}

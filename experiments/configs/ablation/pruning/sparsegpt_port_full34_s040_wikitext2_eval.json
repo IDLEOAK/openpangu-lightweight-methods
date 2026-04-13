@@ -1,0 +1,53 @@
+{
+  "experiment_name": "sparsegpt_port_full34_s040_wikitext2_eval",
+  "method": "sparsegpt",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "",
+  "torch_dtype": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 4,
+    "max_length": 128
+  },
+  "evaluation_data": {
+    "path": "experiments/data/wikitext2_test_public_eval.jsonl",
+    "limit": 512,
+    "max_length": 192,
+    "raw_text": true
+  },
+  "evaluation": {
+    "run_generation": false,
+    "run_perplexity": true,
+    "run_post_prune_perplexity": true,
+    "generation_samples": 0,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 192
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "sparsegpt": {
+    "mode": "sequential_prune",
+    "sparsity": 0.4,
+    "pattern": "unstructured",
+    "block_size": 128,
+    "damp_percent": 0.01,
+    "prunen": 0,
+    "prunem": 0,
+    "true_sequential": true,
+    "min_layer": 0,
+    "max_layer": 34,
+    "prune_only": "",
+    "invert": false,
+    "save_dir": ""
+  },
+  "output_dir": "experiments/results"
+}

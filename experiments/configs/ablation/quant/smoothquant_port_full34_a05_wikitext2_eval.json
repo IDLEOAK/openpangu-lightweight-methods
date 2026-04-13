@@ -1,0 +1,50 @@
+{
+  "experiment_name": "smoothquant_port_full34_a05_wikitext2_eval",
+  "method": "smoothquant",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "",
+  "torch_dtype": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "calibration_data": {
+    "path": "experiments/data/demo_prompts.jsonl",
+    "limit": 4,
+    "max_length": 128
+  },
+  "evaluation_data": {
+    "path": "experiments/data/wikitext2_test_public_eval.jsonl",
+    "limit": 512,
+    "max_length": 192,
+    "raw_text": true
+  },
+  "evaluation": {
+    "run_generation": false,
+    "run_perplexity": true,
+    "run_post_quant_perplexity": true,
+    "generation_samples": 0,
+    "max_new_tokens": 8,
+    "perplexity_max_length": 192
+  },
+  "module_selection": {
+    "include_groups": [
+      "attention",
+      "mlp"
+    ],
+    "exclude_patterns": [
+      "lm_head"
+    ]
+  },
+  "smoothquant": {
+    "mode": "sequential_smoothquant",
+    "bits": 8,
+    "group_size": 128,
+    "alpha": 0.5,
+    "true_sequential": true,
+    "min_layer": 0,
+    "max_layer": 34,
+    "quantize_only": "",
+    "invert": false,
+    "save_dir": ""
+  },
+  "output_dir": "experiments/results"
+}

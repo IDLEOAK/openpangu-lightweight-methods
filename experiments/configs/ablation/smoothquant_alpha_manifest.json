@@ -1,0 +1,54 @@
+{
+  "study_name": "smoothquant_alpha",
+  "category": "quant",
+  "axis": "alpha",
+  "results_root_suggestion": "/mnt/results/ablation/quant",
+  "variants": [
+    {
+      "variant_id": "smoothquant_a03",
+      "label": "SmoothQuant a=0.3",
+      "method": "smoothquant",
+      "axis_value": 0.3,
+      "artifact_method_label": "smoothquant_a03",
+      "result_subdir": "smoothquant_a03",
+      "smoke_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a03_export_bundle.json",
+      "smoke_overrides": {
+        "method_overrides": {
+          "max_layer": 4
+        }
+      },
+      "formal_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a03_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a03_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a03_cnpublic_eval.json"
+    },
+    {
+      "variant_id": "smoothquant_a05",
+      "label": "SmoothQuant a=0.5",
+      "method": "smoothquant",
+      "axis_value": 0.5,
+      "artifact_method_label": "smoothquant_a05",
+      "result_subdir": "smoothquant_a05",
+      "smoke_config": "experiments/configs/smoothquant_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a05_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a05_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a05_cnpublic_eval.json"
+    },
+    {
+      "variant_id": "smoothquant_a07",
+      "label": "SmoothQuant a=0.7",
+      "method": "smoothquant",
+      "axis_value": 0.7,
+      "artifact_method_label": "smoothquant_a07",
+      "result_subdir": "smoothquant_a07",
+      "smoke_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a07_export_bundle.json",
+      "smoke_overrides": {
+        "method_overrides": {
+          "max_layer": 4
+        }
+      },
+      "formal_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a07_export_bundle.json",
+      "wikitext2_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a07_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/ablation/quant/smoothquant_port_full34_a07_cnpublic_eval.json"
+    }
+  ]
+}

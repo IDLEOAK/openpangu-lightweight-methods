@@ -1,0 +1,98 @@
+{
+  "study_name": "quant_group_size",
+  "category": "quant",
+  "axis": "group_size",
+  "results_root_suggestion": "/mnt/results/ablation/quant",
+  "variants": [
+    {
+      "variant_id": "gptq_gs064",
+      "label": "GPTQ gs=64",
+      "method": "gptq",
+      "axis_value": 64,
+      "artifact_method_label": "gptq_gs064",
+      "result_subdir": "gptq_gs064",
+      "smoke_config": "experiments/configs/gptq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/gptq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/gptq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/gptq_port_full34_cnpublic_eval.json",
+      "method_overrides": {
+        "group_size": 64
+      }
+    },
+    {
+      "variant_id": "gptq_gs128",
+      "label": "GPTQ gs=128",
+      "method": "gptq",
+      "axis_value": 128,
+      "artifact_method_label": "gptq_gs128",
+      "result_subdir": "gptq_gs128",
+      "smoke_config": "experiments/configs/gptq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/gptq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/gptq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/gptq_port_full34_cnpublic_eval.json",
+      "method_overrides": {
+        "group_size": 128
+      }
+    },
+    {
+      "variant_id": "gptq_gs256",
+      "label": "GPTQ gs=256",
+      "method": "gptq",
+      "axis_value": 256,
+      "artifact_method_label": "gptq_gs256",
+      "result_subdir": "gptq_gs256",
+      "smoke_config": "experiments/configs/gptq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/gptq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/gptq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/gptq_port_full34_cnpublic_eval.json",
+      "method_overrides": {
+        "group_size": 256
+      }
+    },
+    {
+      "variant_id": "awq_gs064",
+      "label": "AWQ gs=64",
+      "method": "awq",
+      "axis_value": 64,
+      "artifact_method_label": "awq_gs064",
+      "result_subdir": "awq_gs064",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "method_overrides": {
+        "group_size": 64
+      }
+    },
+    {
+      "variant_id": "awq_gs128",
+      "label": "AWQ gs=128",
+      "method": "awq",
+      "axis_value": 128,
+      "artifact_method_label": "awq_gs128",
+      "result_subdir": "awq_gs128",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "method_overrides": {
+        "group_size": 128
+      }
+    },
+    {
+      "variant_id": "awq_gs256",
+      "label": "AWQ gs=256",
+      "method": "awq",
+      "axis_value": 256,
+      "artifact_method_label": "awq_gs256",
+      "result_subdir": "awq_gs256",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "method_overrides": {
+        "group_size": 256
+      }
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "study_name": "calibration_limit",
+  "category": "calibration",
+  "axis": "calibration_limit",
+  "results_root_suggestion": "/mnt/results/ablation/calibration",
+  "variants": [
+    {
+      "variant_id": "admm_cal02",
+      "label": "ADMM calibration=2",
+      "method": "admm",
+      "axis_value": 2,
+      "artifact_method_label": "admm_cal02",
+      "result_subdir": "admm_cal02",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/admm_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/admm_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/admm_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 2
+      }
+    },
+    {
+      "variant_id": "admm_cal04",
+      "label": "ADMM calibration=4",
+      "method": "admm",
+      "axis_value": 4,
+      "artifact_method_label": "admm_cal04",
+      "result_subdir": "admm_cal04",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/admm_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/admm_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/admm_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 4
+      }
+    },
+    {
+      "variant_id": "admm_cal08",
+      "label": "ADMM calibration=8",
+      "method": "admm",
+      "axis_value": 8,
+      "artifact_method_label": "admm_cal08",
+      "result_subdir": "admm_cal08",
+      "smoke_config": "experiments/configs/admm_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/admm_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/admm_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/admm_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 8
+      }
+    },
+    {
+      "variant_id": "awq_cal02",
+      "label": "AWQ calibration=2",
+      "method": "awq",
+      "axis_value": 2,
+      "artifact_method_label": "awq_cal02",
+      "result_subdir": "awq_cal02",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 2
+      }
+    },
+    {
+      "variant_id": "awq_cal04",
+      "label": "AWQ calibration=4",
+      "method": "awq",
+      "axis_value": 4,
+      "artifact_method_label": "awq_cal04",
+      "result_subdir": "awq_cal04",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 4
+      }
+    },
+    {
+      "variant_id": "awq_cal08",
+      "label": "AWQ calibration=8",
+      "method": "awq",
+      "axis_value": 8,
+      "artifact_method_label": "awq_cal08",
+      "result_subdir": "awq_cal08",
+      "smoke_config": "experiments/configs/awq_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/awq_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/awq_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/awq_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 8
+      }
+    },
+    {
+      "variant_id": "smoothquant_cal02",
+      "label": "SmoothQuant calibration=2",
+      "method": "smoothquant",
+      "axis_value": 2,
+      "artifact_method_label": "smoothquant_cal02",
+      "result_subdir": "smoothquant_cal02",
+      "smoke_config": "experiments/configs/smoothquant_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/smoothquant_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/smoothquant_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/smoothquant_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 2
+      }
+    },
+    {
+      "variant_id": "smoothquant_cal04",
+      "label": "SmoothQuant calibration=4",
+      "method": "smoothquant",
+      "axis_value": 4,
+      "artifact_method_label": "smoothquant_cal04",
+      "result_subdir": "smoothquant_cal04",
+      "smoke_config": "experiments/configs/smoothquant_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/smoothquant_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/smoothquant_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/smoothquant_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 4
+      }
+    },
+    {
+      "variant_id": "smoothquant_cal08",
+      "label": "SmoothQuant calibration=8",
+      "method": "smoothquant",
+      "axis_value": 8,
+      "artifact_method_label": "smoothquant_cal08",
+      "result_subdir": "smoothquant_cal08",
+      "smoke_config": "experiments/configs/smoothquant_port_layers0_3_stable.json",
+      "formal_config": "experiments/configs/smoothquant_port_full34_export_bundle.json",
+      "wikitext2_config": "experiments/configs/smoothquant_port_full34_wikitext2_eval.json",
+      "cnpublic_config": "experiments/configs/smoothquant_port_full34_cnpublic_eval.json",
+      "calibration_overrides": {
+        "limit": 8
+      }
+    }
+  ]
+}
