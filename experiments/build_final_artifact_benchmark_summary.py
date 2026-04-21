@@ -6,35 +6,36 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def collect_latest_runs(results_root: Path, methods: list[str]):
+def collect_latest_runs(results_roots: list[Path], methods: list[str]):
     latest = {}
-    for method in methods:
-        method_dir = results_root / method
-        if not method_dir.exists():
-            continue
-        for run_dir in method_dir.iterdir():
-            summary_path = run_dir / "summary.json"
-            if not summary_path.exists():
+    for results_root in results_roots:
+        for method in methods:
+            method_dir = results_root / method
+            if not method_dir.exists():
                 continue
-            summary = read_json(summary_path)
-            benchmark_plan = summary.get("benchmark_plan", {})
-            task_slug = benchmark_plan.get("task_slug")
-            if not task_slug:
-                continue
-            key = (method, task_slug)
-            mtime = summary_path.stat().st_mtime
-            current = latest.get(key)
-            if current is None or mtime > current["mtime"]:
-                benchmark_result = summary.get("benchmark_result", {})
-                latest[key] = {
-                    "method": method,
-                    "task_slug": task_slug,
-                    "run_dir": str(run_dir),
-                    "accuracy": benchmark_result.get("accuracy"),
-                    "evaluated_count": benchmark_result.get("evaluated_count"),
-                    "correct_count": benchmark_result.get("correct_count"),
-                    "mtime": mtime,
-                }
+            for run_dir in method_dir.iterdir():
+                summary_path = run_dir / "summary.json"
+                if not summary_path.exists():
+                    continue
+                summary = read_json(summary_path)
+                benchmark_plan = summary.get("benchmark_plan", {})
+                task_slug = benchmark_plan.get("task_slug")
+                if not task_slug:
+                    continue
+                key = (method, task_slug)
+                mtime = summary_path.stat().st_mtime
+                current = latest.get(key)
+                if current is None or mtime > current["mtime"]:
+                    benchmark_result = summary.get("benchmark_result", {})
+                    latest[key] = {
+                        "method": method,
+                        "task_slug": task_slug,
+                        "run_dir": str(run_dir),
+                        "accuracy": benchmark_result.get("accuracy"),
+                        "evaluated_count": benchmark_result.get("evaluated_count"),
+                        "correct_count": benchmark_result.get("correct_count"),
+                        "mtime": mtime,
+                    }
     return latest
 
 
@@ -77,13 +78,45 @@ def build_aggregates(tasks_payload: dict, task_language: dict, methods: list[str
     return aggregates
 
 
+def resolve_from_repo_root(repo_root: Path, value: str) -> Path:
+    path = Path(value)
+    if not path.is_absolute():
+        path = (repo_root / path).resolve()
+    else:
+        path = path.resolve()
+    return path
+
+
+def discover_results_roots(results_root: Path) -> list[Path]:
+    roots: list[Path] = []
+    if results_root.exists():
+        roots.append(results_root)
+
+    # Local synced snapshots are typically returned as final_artifact_hard_8x8_<timestamp>/.
+    for snapshot_root in sorted(
+        (path for path in results_root.parent.glob("final_artifact_hard_8x8_*") if path.is_dir()),
+        key=lambda item: item.stat().st_mtime,
+        reverse=True,
+    ):
+        if snapshot_root not in roots:
+            roots.append(snapshot_root)
+    return roots
+
+
 def main() -> int:
     experiments_root = Path(__file__).resolve().parent
+    repo_root = experiments_root.parent
     task_manifest = read_json(experiments_root / "configs" / "final_artifact_benchmark_tasks.json")
     method_manifest = read_json(experiments_root / "configs" / "final_artifact_benchmark_models.json")
-    results_root = Path(method_manifest["final_results_root"]).resolve()
-    summary_root = Path(method_manifest["final_summary_root"]).resolve()
-    summary_root.mkdir(parents=True, exist_ok=True)
+    results_root = resolve_from_repo_root(repo_root, method_manifest["final_results_root"])
+    discovered_results_roots = discover_results_roots(results_root)
+    summary_root = resolve_from_repo_root(repo_root, method_manifest["final_summary_root"])
+    repo_summary_root = results_root.parent
+    output_roots: list[Path] = []
+    for root in (summary_root, repo_summary_root):
+        if root not in output_roots:
+            root.mkdir(parents=True, exist_ok=True)
+            output_roots.append(root)
 
     methods = ["baseline"] + list(method_manifest["methods"].keys())
     task_entries = task_manifest["tasks"]
@@ -95,7 +128,10 @@ def main() -> int:
         "zh": sum(1 for item in task_entries if item["language"] == "zh"),
     }
 
-    latest = collect_latest_runs(results_root, methods)
+    latest = collect_latest_runs(discovered_results_roots, methods)
+    if not latest:
+        searched = ", ".join(str(path) for path in discovered_results_roots) or str(results_root)
+        raise RuntimeError(f"No final-artifact benchmark runs found under: {searched}")
     payload = {"tasks": {}, "methods": methods}
     for task_slug in ordered_tasks:
         payload["tasks"][task_slug] = {}
@@ -111,9 +147,11 @@ def main() -> int:
 
     payload["aggregates"] = build_aggregates(payload["tasks"], task_language, methods)
 
-    summary_json = summary_root / "final_artifact_benchmark_summary.json"
-    summary_md = summary_root / "final_artifact_benchmark_summary.md"
-    summary_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    json_text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    summary_json_paths = [root / "final_artifact_benchmark_summary.json" for root in output_roots]
+    summary_md_paths = [root / "final_artifact_benchmark_summary.md" for root in output_roots]
+    for path in summary_json_paths:
+        path.write_text(json_text, encoding="utf-8")
 
     lines = ["# Final Artifact Benchmark Summary", ""]
     lines.append("## Aggregate Metrics")
@@ -145,9 +183,13 @@ def main() -> int:
                 f"| {method} | {row['accuracy']} | {row['correct_count']}/{row['evaluated_count']} | `{row['run_dir']}` |"
             )
         lines.append("")
-    summary_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"[OK] json={summary_json}")
-    print(f"[OK] markdown={summary_md}")
+    markdown_text = "\n".join(lines) + "\n"
+    for path in summary_md_paths:
+        path.write_text(markdown_text, encoding="utf-8")
+    for path in summary_json_paths:
+        print(f"[OK] json={path}")
+    for path in summary_md_paths:
+        print(f"[OK] markdown={path}")
     return 0
 
 

@@ -84,6 +84,13 @@ Final summary files are written to:
 /mnt/results/final_artifact_benchmark/final_artifact_benchmark_summary.md
 ```
 
+At the same time, `build_final_artifact_benchmark_summary.py` mirrors the same two files into the repository-local result entrypoint used by local docs / thesis checks:
+
+```text
+/mnt/openpangu-embedded-7b-model/experiments/results/final_artifact_benchmark_summary.json
+/mnt/openpangu-embedded-7b-model/experiments/results/final_artifact_benchmark_summary.md
+```
+
 ## Preparing Benchmark Jsonl Files
 
 If the 16 benchmark jsonl files do not yet exist locally, regenerate them with:
