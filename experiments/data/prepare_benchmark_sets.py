@@ -120,6 +120,20 @@ TASK_REGISTRY: Dict[str, Dict[str, str]] = {
         "language": "zh",
         "filename": "ceval_computer_network_val_mcq.jsonl",
     },
+    "ceval_operating_system": {
+        "dataset": "ceval/ceval-exam",
+        "config": "operating_system",
+        "split": "val",
+        "language": "zh",
+        "filename": "ceval_operating_system_val_mcq.jsonl",
+    },
+    "ceval_computer_architecture": {
+        "dataset": "ceval/ceval-exam",
+        "config": "computer_architecture",
+        "split": "val",
+        "language": "zh",
+        "filename": "ceval_computer_architecture_val_mcq.jsonl",
+    },
 }
 
 
@@ -145,6 +159,22 @@ TASK_GROUPS: Dict[str, List[str]] = {
         "cmmlu_machine_learning",
         "cmmlu_high_school_mathematics",
         "cmmlu_college_mathematics",
+    ],
+    "ceval_core_zh": [
+        "ceval_college_programming",
+        "ceval_computer_network",
+        "ceval_operating_system",
+        "ceval_computer_architecture",
+    ],
+    "stage_c_core": [
+        "ceval_college_programming",
+        "ceval_computer_network",
+        "ceval_operating_system",
+        "ceval_computer_architecture",
+        "mmlu_college_computer_science",
+        "mmlu_computer_security",
+        "mmlu_machine_learning",
+        "mmlu_formal_logic",
     ],
     "formal_core": [
         "boolq",

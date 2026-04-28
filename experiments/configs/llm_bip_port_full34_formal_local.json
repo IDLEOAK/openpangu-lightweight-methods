@@ -17,10 +17,10 @@
     "max_length": 192
   },
   "evaluation": {
-    "run_generation": true,
+    "run_generation": false,
     "run_perplexity": true,
     "run_post_prune_perplexity": true,
-    "generation_samples": 2,
+    "generation_samples": 0,
     "max_new_tokens": 8,
     "perplexity_max_length": 192
   },

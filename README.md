@@ -104,3 +104,10 @@ vllm_ascend：参考[[vllm_ascend_for_openpangu_embedded_7b.zh]](inference/vllm_
 ## 7. 反馈
 
 如果有任何意见和建议，请提交issue或联系 openPangu@huawei.com。
+# Project Note
+#
+# - In this project fork, `inference/generate.py` defaults `MODEL_PATH` to the repository root.
+# - `inference/generate.py` redirects `HF_HOME` to the project-level `.hf_cache`.
+# - Recommended GPU baseline verification command:
+#   `python inference/minimal_gpu_verify.py --model-path . --device-map auto --max-new-tokens 8`
+# - The current `generate.py` does not contain the previous `no_thinking_prompt` or `/no_think` switch example.

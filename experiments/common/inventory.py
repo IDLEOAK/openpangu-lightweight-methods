@@ -56,3 +56,24 @@ def select_target_modules(inventory: Dict, include_groups: List[str], exclude_pa
             continue
         selected.append(module)
     return selected
+
+
+def validate_target_modules(
+    inventory: Dict,
+    selected: List[Dict],
+    include_groups: List[str],
+    exclude_patterns: List[str],
+) -> None:
+    available_groups = sorted({module["group"] for module in inventory["modules"]})
+    unknown_groups = sorted(set(include_groups) - set(available_groups))
+    if unknown_groups:
+        raise ValueError(
+            f"Unknown include_groups={unknown_groups}. Available groups={available_groups}"
+        )
+
+    if not selected:
+        raise ValueError(
+            "Target module selection is empty. "
+            f"include_groups={include_groups}, exclude_patterns={exclude_patterns}, "
+            f"available_groups={available_groups}"
+        )

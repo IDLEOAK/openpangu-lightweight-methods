@@ -2,20 +2,23 @@
 # Copyright (c) 2025 Huawei Technologies Co., Ltd. All rights reserved.
 
 import os
+from pathlib import Path
 
 import torch
 
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 # Avoid permission issues from default user-level cache locations.
 if "HF_HOME" not in os.environ:
-    default_hf_home = os.path.abspath(os.path.join(os.getcwd(), ".hf_cache"))
-    os.makedirs(default_hf_home, exist_ok=True)
-    os.environ["HF_HOME"] = default_hf_home
+    default_hf_home = REPO_ROOT / ".hf_cache"
+    default_hf_home.mkdir(parents=True, exist_ok=True)
+    os.environ["HF_HOME"] = str(default_hf_home)
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
-MODEL_LOCAL_PATH = os.getenv("MODEL_PATH", "path_to_openPangu-Embedded-7B")
+MODEL_LOCAL_PATH = os.getenv("MODEL_PATH", str(REPO_ROOT))
 MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "512"))
 MODEL_DEVICE_MAP = os.getenv("MODEL_DEVICE_MAP", "").strip()
 
@@ -30,6 +33,7 @@ def select_runtime() -> tuple[torch.device, torch.dtype]:
 
 runtime_device, model_dtype = select_runtime()
 print(f"[INFO] model_path={MODEL_LOCAL_PATH}")
+print(f"[INFO] hf_home={os.environ['HF_HOME']}")
 print(f"[INFO] runtime_device={runtime_device}, torch_dtype={model_dtype}")
 if MODEL_DEVICE_MAP:
     print(f"[INFO] model_device_map={MODEL_DEVICE_MAP}")

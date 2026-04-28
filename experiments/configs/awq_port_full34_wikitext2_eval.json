@@ -14,7 +14,8 @@
   "evaluation_data": {
     "path": "experiments/data/wikitext2_test_public_eval.jsonl",
     "limit": 512,
-    "max_length": 192
+    "max_length": 192,
+    "raw_text": true
   },
   "evaluation": {
     "run_generation": false,

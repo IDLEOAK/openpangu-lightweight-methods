@@ -1,0 +1,658 @@
+{
+  "tasks": {
+    "boolq_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.75,
+        "evaluated_count": 64,
+        "correct_count": 48,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-000535-benchmark_public_mcq_baseline_boolq_validation_mcq_boolq_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.796875,
+        "evaluated_count": 64,
+        "correct_count": 51,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-000821-sparsegpt_port_full34_benchmark_boolq_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.671875,
+        "evaluated_count": 64,
+        "correct_count": 43,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-001552-admm_port_full34_benchmark_boolq_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.71875,
+        "evaluated_count": 64,
+        "correct_count": 46,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-001945-gptq_port_full34_benchmark_boolq_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.703125,
+        "evaluated_count": 64,
+        "correct_count": 45,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-002842-awq_port_full34_benchmark_boolq_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.75,
+        "evaluated_count": 64,
+        "correct_count": 48,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-003216-smoothquant_port_full34_benchmark_boolq_validation_mcq"
+      }
+    },
+    "ceval_college_programming_val_mcq": {
+      "baseline": {
+        "accuracy": 0.27027,
+        "evaluated_count": 37,
+        "correct_count": 10,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-003500-benchmark_public_mcq_baseline_ceval_college_programming_val_mcq_ceval_college_programming_val_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.27027,
+        "evaluated_count": 37,
+        "correct_count": 10,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-003731-sparsegpt_port_full34_benchmark_ceval_college_programming_val_mcq"
+      },
+      "admm": {
+        "accuracy": 0.162162,
+        "evaluated_count": 37,
+        "correct_count": 6,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-004457-admm_port_full34_benchmark_ceval_college_programming_val_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.243243,
+        "evaluated_count": 37,
+        "correct_count": 9,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-004847-gptq_port_full34_benchmark_ceval_college_programming_val_mcq"
+      },
+      "awq": {
+        "accuracy": 0.243243,
+        "evaluated_count": 37,
+        "correct_count": 9,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-005740-awq_port_full34_benchmark_ceval_college_programming_val_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.297297,
+        "evaluated_count": 37,
+        "correct_count": 11,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-010113-smoothquant_port_full34_benchmark_ceval_college_programming_val_mcq"
+      }
+    },
+    "ceval_computer_network_val_mcq": {
+      "baseline": {
+        "accuracy": 0.473684,
+        "evaluated_count": 19,
+        "correct_count": 9,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-010356-benchmark_public_mcq_baseline_ceval_computer_network_val_mcq_ceval_computer_network_val_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.368421,
+        "evaluated_count": 19,
+        "correct_count": 7,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-010620-sparsegpt_port_full34_benchmark_ceval_computer_network_val_mcq"
+      },
+      "admm": {
+        "accuracy": 0.263158,
+        "evaluated_count": 19,
+        "correct_count": 5,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-011343-admm_port_full34_benchmark_ceval_computer_network_val_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.473684,
+        "evaluated_count": 19,
+        "correct_count": 9,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-011730-gptq_port_full34_benchmark_ceval_computer_network_val_mcq"
+      },
+      "awq": {
+        "accuracy": 0.315789,
+        "evaluated_count": 19,
+        "correct_count": 6,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-012616-awq_port_full34_benchmark_ceval_computer_network_val_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.421053,
+        "evaluated_count": 19,
+        "correct_count": 8,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-012948-smoothquant_port_full34_benchmark_ceval_computer_network_val_mcq"
+      }
+    },
+    "cmmlu_college_mathematics_train_mcq": {
+      "baseline": {
+        "accuracy": 0.28125,
+        "evaluated_count": 64,
+        "correct_count": 18,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-013226-benchmark_public_mcq_baseline_cmmlu_college_mathematics_train_mcq_cmmlu_college_mathematics_train_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.296875,
+        "evaluated_count": 64,
+        "correct_count": 19,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-013456-sparsegpt_port_full34_benchmark_cmmlu_college_mathematics_train_mcq"
+      },
+      "admm": {
+        "accuracy": 0.234375,
+        "evaluated_count": 64,
+        "correct_count": 15,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-014226-admm_port_full34_benchmark_cmmlu_college_mathematics_train_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.234375,
+        "evaluated_count": 64,
+        "correct_count": 15,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-014624-gptq_port_full34_benchmark_cmmlu_college_mathematics_train_mcq"
+      },
+      "awq": {
+        "accuracy": 0.25,
+        "evaluated_count": 64,
+        "correct_count": 16,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-015524-awq_port_full34_benchmark_cmmlu_college_mathematics_train_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.296875,
+        "evaluated_count": 64,
+        "correct_count": 19,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-015904-smoothquant_port_full34_benchmark_cmmlu_college_mathematics_train_mcq"
+      }
+    },
+    "cmmlu_computer_science_train_mcq": {
+      "baseline": {
+        "accuracy": 0.3125,
+        "evaluated_count": 64,
+        "correct_count": 20,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-020155-benchmark_public_mcq_baseline_cmmlu_computer_science_train_mcq_cmmlu_computer_science_train_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.359375,
+        "evaluated_count": 64,
+        "correct_count": 23,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-020425-sparsegpt_port_full34_benchmark_cmmlu_computer_science_train_mcq"
+      },
+      "admm": {
+        "accuracy": 0.265625,
+        "evaluated_count": 64,
+        "correct_count": 17,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-021157-admm_port_full34_benchmark_cmmlu_computer_science_train_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.34375,
+        "evaluated_count": 64,
+        "correct_count": 22,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-021553-gptq_port_full34_benchmark_cmmlu_computer_science_train_mcq"
+      },
+      "awq": {
+        "accuracy": 0.21875,
+        "evaluated_count": 64,
+        "correct_count": 14,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-022450-awq_port_full34_benchmark_cmmlu_computer_science_train_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.34375,
+        "evaluated_count": 64,
+        "correct_count": 22,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-022828-smoothquant_port_full34_benchmark_cmmlu_computer_science_train_mcq"
+      }
+    },
+    "cmmlu_computer_security_train_mcq": {
+      "baseline": {
+        "accuracy": 0.359375,
+        "evaluated_count": 64,
+        "correct_count": 23,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-023117-benchmark_public_mcq_baseline_cmmlu_computer_security_train_mcq_cmmlu_computer_security_train_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.390625,
+        "evaluated_count": 64,
+        "correct_count": 25,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-023347-sparsegpt_port_full34_benchmark_cmmlu_computer_security_train_mcq"
+      },
+      "admm": {
+        "accuracy": 0.296875,
+        "evaluated_count": 64,
+        "correct_count": 19,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-024120-admm_port_full34_benchmark_cmmlu_computer_security_train_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.265625,
+        "evaluated_count": 64,
+        "correct_count": 17,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-024516-gptq_port_full34_benchmark_cmmlu_computer_security_train_mcq"
+      },
+      "awq": {
+        "accuracy": 0.375,
+        "evaluated_count": 64,
+        "correct_count": 24,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-025444-awq_port_full34_benchmark_cmmlu_computer_security_train_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.390625,
+        "evaluated_count": 64,
+        "correct_count": 25,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-025823-smoothquant_port_full34_benchmark_cmmlu_computer_security_train_mcq"
+      }
+    },
+    "cmmlu_high_school_mathematics_train_mcq": {
+      "baseline": {
+        "accuracy": 0.203125,
+        "evaluated_count": 64,
+        "correct_count": 13,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-030110-benchmark_public_mcq_baseline_cmmlu_high_school_mathematics_train_mcq_cmmlu_high_school_mathematics_train_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.234375,
+        "evaluated_count": 64,
+        "correct_count": 15,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-030340-sparsegpt_port_full34_benchmark_cmmlu_high_school_mathematics_train_mcq"
+      },
+      "admm": {
+        "accuracy": 0.265625,
+        "evaluated_count": 64,
+        "correct_count": 17,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-031120-admm_port_full34_benchmark_cmmlu_high_school_mathematics_train_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.171875,
+        "evaluated_count": 64,
+        "correct_count": 11,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-031516-gptq_port_full34_benchmark_cmmlu_high_school_mathematics_train_mcq"
+      },
+      "awq": {
+        "accuracy": 0.234375,
+        "evaluated_count": 64,
+        "correct_count": 15,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-032411-awq_port_full34_benchmark_cmmlu_high_school_mathematics_train_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.203125,
+        "evaluated_count": 64,
+        "correct_count": 13,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-032752-smoothquant_port_full34_benchmark_cmmlu_high_school_mathematics_train_mcq"
+      }
+    },
+    "cmmlu_machine_learning_train_mcq": {
+      "baseline": {
+        "accuracy": 0.28125,
+        "evaluated_count": 64,
+        "correct_count": 18,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-033041-benchmark_public_mcq_baseline_cmmlu_machine_learning_train_mcq_cmmlu_machine_learning_train_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.25,
+        "evaluated_count": 64,
+        "correct_count": 16,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-033311-sparsegpt_port_full34_benchmark_cmmlu_machine_learning_train_mcq"
+      },
+      "admm": {
+        "accuracy": 0.234375,
+        "evaluated_count": 64,
+        "correct_count": 15,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-034042-admm_port_full34_benchmark_cmmlu_machine_learning_train_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.4375,
+        "evaluated_count": 64,
+        "correct_count": 28,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-034439-gptq_port_full34_benchmark_cmmlu_machine_learning_train_mcq"
+      },
+      "awq": {
+        "accuracy": 0.28125,
+        "evaluated_count": 64,
+        "correct_count": 18,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-035334-awq_port_full34_benchmark_cmmlu_machine_learning_train_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.328125,
+        "evaluated_count": 64,
+        "correct_count": 21,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-035714-smoothquant_port_full34_benchmark_cmmlu_machine_learning_train_mcq"
+      }
+    },
+    "hellaswag_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.265625,
+        "evaluated_count": 64,
+        "correct_count": 17,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-040002-benchmark_public_mcq_baseline_hellaswag_validation_mcq_hellaswag_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.328125,
+        "evaluated_count": 64,
+        "correct_count": 21,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-040233-sparsegpt_port_full34_benchmark_hellaswag_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.28125,
+        "evaluated_count": 64,
+        "correct_count": 18,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-041003-admm_port_full34_benchmark_hellaswag_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.3125,
+        "evaluated_count": 64,
+        "correct_count": 20,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-041358-gptq_port_full34_benchmark_hellaswag_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.3125,
+        "evaluated_count": 64,
+        "correct_count": 20,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-042257-awq_port_full34_benchmark_hellaswag_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.265625,
+        "evaluated_count": 64,
+        "correct_count": 17,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-042637-smoothquant_port_full34_benchmark_hellaswag_validation_mcq"
+      }
+    },
+    "mmlu_college_computer_science_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.636364,
+        "evaluated_count": 11,
+        "correct_count": 7,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-042926-benchmark_public_mcq_baseline_mmlu_college_computer_science_validation_mcq_mmlu_college_computer_science_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.545455,
+        "evaluated_count": 11,
+        "correct_count": 6,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-043149-sparsegpt_port_full34_benchmark_mmlu_college_computer_science_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.272727,
+        "evaluated_count": 11,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-043907-admm_port_full34_benchmark_mmlu_college_computer_science_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-044251-gptq_port_full34_benchmark_mmlu_college_computer_science_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-045138-awq_port_full34_benchmark_mmlu_college_computer_science_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.636364,
+        "evaluated_count": 11,
+        "correct_count": 7,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-045505-smoothquant_port_full34_benchmark_mmlu_college_computer_science_validation_mcq"
+      }
+    },
+    "mmlu_college_mathematics_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.272727,
+        "evaluated_count": 11,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-045741-benchmark_public_mcq_baseline_mmlu_college_mathematics_validation_mcq_mmlu_college_mathematics_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.181818,
+        "evaluated_count": 11,
+        "correct_count": 2,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-050004-sparsegpt_port_full34_benchmark_mmlu_college_mathematics_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.272727,
+        "evaluated_count": 11,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-050726-admm_port_full34_benchmark_mmlu_college_mathematics_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-051112-gptq_port_full34_benchmark_mmlu_college_mathematics_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.272727,
+        "evaluated_count": 11,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-051958-awq_port_full34_benchmark_mmlu_college_mathematics_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.272727,
+        "evaluated_count": 11,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-052326-smoothquant_port_full34_benchmark_mmlu_college_mathematics_validation_mcq"
+      }
+    },
+    "mmlu_computer_security_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-052602-benchmark_public_mcq_baseline_mmlu_computer_security_validation_mcq_mmlu_computer_security_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.090909,
+        "evaluated_count": 11,
+        "correct_count": 1,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-052827-sparsegpt_port_full34_benchmark_mmlu_computer_security_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.090909,
+        "evaluated_count": 11,
+        "correct_count": 1,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-053542-admm_port_full34_benchmark_mmlu_computer_security_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.181818,
+        "evaluated_count": 11,
+        "correct_count": 2,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-053927-gptq_port_full34_benchmark_mmlu_computer_security_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.090909,
+        "evaluated_count": 11,
+        "correct_count": 1,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-054812-awq_port_full34_benchmark_mmlu_computer_security_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-055140-smoothquant_port_full34_benchmark_mmlu_computer_security_validation_mcq"
+      }
+    },
+    "mmlu_formal_logic_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.5,
+        "evaluated_count": 14,
+        "correct_count": 7,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-055416-benchmark_public_mcq_baseline_mmlu_formal_logic_validation_mcq_mmlu_formal_logic_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.357143,
+        "evaluated_count": 14,
+        "correct_count": 5,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-055640-sparsegpt_port_full34_benchmark_mmlu_formal_logic_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.428571,
+        "evaluated_count": 14,
+        "correct_count": 6,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-060358-admm_port_full34_benchmark_mmlu_formal_logic_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.357143,
+        "evaluated_count": 14,
+        "correct_count": 5,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-060745-gptq_port_full34_benchmark_mmlu_formal_logic_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.357143,
+        "evaluated_count": 14,
+        "correct_count": 5,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-061633-awq_port_full34_benchmark_mmlu_formal_logic_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.5,
+        "evaluated_count": 14,
+        "correct_count": 7,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-062004-smoothquant_port_full34_benchmark_mmlu_formal_logic_validation_mcq"
+      }
+    },
+    "mmlu_high_school_computer_science_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.333333,
+        "evaluated_count": 9,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-062242-benchmark_public_mcq_baseline_mmlu_high_school_computer_science_validation_mcq_mmlu_high_school_computer_science_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.444444,
+        "evaluated_count": 9,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-062508-sparsegpt_port_full34_benchmark_mmlu_high_school_computer_science_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.444444,
+        "evaluated_count": 9,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-063230-admm_port_full34_benchmark_mmlu_high_school_computer_science_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.444444,
+        "evaluated_count": 9,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-063616-gptq_port_full34_benchmark_mmlu_high_school_computer_science_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.222222,
+        "evaluated_count": 9,
+        "correct_count": 2,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-064500-awq_port_full34_benchmark_mmlu_high_school_computer_science_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.333333,
+        "evaluated_count": 9,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-064829-smoothquant_port_full34_benchmark_mmlu_high_school_computer_science_validation_mcq"
+      }
+    },
+    "mmlu_machine_learning_validation_mcq": {
+      "baseline": {
+        "accuracy": 0.181818,
+        "evaluated_count": 11,
+        "correct_count": 2,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\benchmark\\20260407-065106-benchmark_public_mcq_baseline_mmlu_machine_learning_validation_mcq_mmlu_machine_learning_validation_mcq"
+      },
+      "sparsegpt": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\sparsegpt\\20260407-065332-sparsegpt_port_full34_benchmark_mmlu_machine_learning_validation_mcq"
+      },
+      "admm": {
+        "accuracy": 0.272727,
+        "evaluated_count": 11,
+        "correct_count": 3,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\admm\\20260407-070052-admm_port_full34_benchmark_mmlu_machine_learning_validation_mcq"
+      },
+      "gptq": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\gptq\\20260407-070440-gptq_port_full34_benchmark_mmlu_machine_learning_validation_mcq"
+      },
+      "awq": {
+        "accuracy": 0.363636,
+        "evaluated_count": 11,
+        "correct_count": 4,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\awq\\20260407-071326-awq_port_full34_benchmark_mmlu_machine_learning_validation_mcq"
+      },
+      "smoothquant": {
+        "accuracy": 0.181818,
+        "evaluated_count": 11,
+        "correct_count": 2,
+        "run_dir": "C:\\Document\\graduationProject\\openpangu-embedded-7b-model\\experiments\\results\\smoothquant\\20260407-071657-smoothquant_port_full34_benchmark_mmlu_machine_learning_validation_mcq"
+      }
+    }
+  },
+  "methods": [
+    "baseline",
+    "sparsegpt",
+    "admm",
+    "gptq",
+    "awq",
+    "smoothquant"
+  ],
+  "aggregates": {
+    "macro_average": {
+      "baseline": {
+        "all": 0.365664,
+        "en": 0.412938,
+        "zh": 0.311636
+      },
+      "sparsegpt": {
+        "all": 0.35189,
+        "en": 0.388551,
+        "zh": 0.309992
+      },
+      "admm": {
+        "all": 0.297162,
+        "en": 0.341904,
+        "zh": 0.246028
+      },
+      "gptq": {
+        "all": 0.351708,
+        "en": 0.388195,
+        "zh": 0.310007
+      },
+      "awq": {
+        "all": 0.306954,
+        "en": 0.335737,
+        "zh": 0.274058
+      },
+      "smoothquant": {
+        "all": 0.37229,
+        "en": 0.412938,
+        "zh": 0.325836
+      }
+    },
+    "weighted_average": {
+      "baseline": {
+        "all": 0.353765,
+        "en": 0.466667,
+        "zh": 0.295213
+      },
+      "sparsegpt": {
+        "all": 0.366025,
+        "en": 0.482051,
+        "zh": 0.305851
+      },
+      "admm": {
+        "all": 0.30648,
+        "en": 0.415385,
+        "zh": 0.25
+      },
+      "gptq": {
+        "all": 0.350263,
+        "en": 0.45641,
+        "zh": 0.295213
+      },
+      "awq": {
+        "all": 0.325744,
+        "en": 0.430769,
+        "zh": 0.271277
+      },
+      "smoothquant": {
+        "all": 0.367776,
+        "en": 0.466667,
+        "zh": 0.316489
+      }
+    },
+    "task_counts": {
+      "all": 15,
+      "en": 8,
+      "zh": 7
+    },
+    "sample_counts": {
+      "all": 571,
+      "en": 195,
+      "zh": 376
+    }
+  }
+}

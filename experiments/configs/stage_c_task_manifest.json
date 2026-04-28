@@ -1,0 +1,45 @@
+{
+  "task_group": "stage_c_core",
+  "tasks": [
+    {
+      "task_name": "mmlu_college_computer_science",
+      "language": "en",
+      "benchmark_data": "experiments/data/benchmarks/mmlu_college_computer_science_validation_mcq.jsonl"
+    },
+    {
+      "task_name": "mmlu_computer_security",
+      "language": "en",
+      "benchmark_data": "experiments/data/benchmarks/mmlu_computer_security_validation_mcq.jsonl"
+    },
+    {
+      "task_name": "mmlu_machine_learning",
+      "language": "en",
+      "benchmark_data": "experiments/data/benchmarks/mmlu_machine_learning_validation_mcq.jsonl"
+    },
+    {
+      "task_name": "mmlu_formal_logic",
+      "language": "en",
+      "benchmark_data": "experiments/data/benchmarks/mmlu_formal_logic_validation_mcq.jsonl"
+    },
+    {
+      "task_name": "ceval_college_programming",
+      "language": "zh",
+      "benchmark_data": "experiments/data/benchmarks/ceval_college_programming_val_mcq.jsonl"
+    },
+    {
+      "task_name": "ceval_computer_network",
+      "language": "zh",
+      "benchmark_data": "experiments/data/benchmarks/ceval_computer_network_val_mcq.jsonl"
+    },
+    {
+      "task_name": "ceval_operating_system",
+      "language": "zh",
+      "benchmark_data": "experiments/data/benchmarks/ceval_operating_system_val_mcq.jsonl"
+    },
+    {
+      "task_name": "ceval_computer_architecture",
+      "language": "zh",
+      "benchmark_data": "experiments/data/benchmarks/ceval_computer_architecture_val_mcq.jsonl"
+    }
+  ]
+}

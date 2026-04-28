@@ -8,29 +8,51 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers
 
+from experiments.compressed_artifacts.io import pack_nbit_codes
+
+
+class _CaptureInputsExit(Exception):
+    """Internal sentinel used to stop the forward pass after layer-0 inputs are captured."""
+
 
 def pseudo_quantize_weight(weight: torch.Tensor, bits: int, group_size: int, sym: bool = False) -> torch.Tensor:
+    return groupwise_quantize_with_params(weight, bits=bits, group_size=group_size, sym=sym)["dequantized"]
+
+
+def groupwise_quantize_with_params(weight: torch.Tensor, bits: int, group_size: int, sym: bool = False) -> Dict:
     rows, cols = weight.shape
     quantized = torch.zeros_like(weight)
-    group_size = cols if group_size <= 0 else group_size
+    codes = torch.zeros((rows, cols), dtype=torch.uint8, device=weight.device)
+    effective_group_size = cols if group_size <= 0 else group_size
+    group_count = math.ceil(cols / effective_group_size)
+    scales = torch.zeros((rows, group_count), dtype=torch.float32, device=weight.device)
+    zeros = torch.zeros((rows, group_count), dtype=torch.float32, device=weight.device)
     maxq = 2**bits - 1
 
-    for start in range(0, cols, group_size):
-        end = min(start + group_size, cols)
+    for group_idx, start in enumerate(range(0, cols, effective_group_size)):
+        end = min(start + effective_group_size, cols)
         group = weight[:, start:end]
         if sym:
             max_val = group.abs().amax(dim=1, keepdim=True).clamp_min(1e-8)
             scale = max_val / max((2 ** (bits - 1)) - 1, 1)
-            q = torch.clamp(torch.round(group / scale), -(2 ** (bits - 1)), 2 ** (bits - 1) - 1)
-            quantized[:, start:end] = q * scale
+            zero = torch.full_like(scale, 2 ** (bits - 1))
+            q = torch.clamp(torch.round(group / scale) + zero, 0, maxq)
         else:
             min_val = group.amin(dim=1, keepdim=True)
             max_val = group.amax(dim=1, keepdim=True)
             scale = ((max_val - min_val) / maxq).clamp_min(1e-8)
             zero = torch.round(-min_val / scale)
             q = torch.clamp(torch.round(group / scale) + zero, 0, maxq)
-            quantized[:, start:end] = scale * (q - zero)
-    return quantized
+        quantized[:, start:end] = scale * (q - zero)
+        codes[:, start:end] = q.to(torch.uint8)
+        scales[:, group_idx] = scale.squeeze(1).to(torch.float32)
+        zeros[:, group_idx] = zero.squeeze(1).to(torch.float32)
+    return {
+        "dequantized": quantized,
+        "codes": codes,
+        "scales": scales,
+        "zeros": zeros,
+    }
 
 
 class AWQQuantizer:
@@ -96,19 +118,20 @@ class AWQQuantizer:
         best_alpha = 0.0
         best_loss = float("inf")
         best_weight = weight
+        best_artifact = None
 
         grid_size = max(1, int(self.alpha_grid))
         for step_idx in range(grid_size + 1):
             alpha = step_idx / grid_size
             scale = self._build_scale(activation_mean, alpha)
             scaled_weight = weight * scale.unsqueeze(0)
-            quantized = pseudo_quantize_weight(
+            quantized_payload = groupwise_quantize_with_params(
                 scaled_weight,
                 bits=self.bits,
                 group_size=self.group_size,
                 sym=self.sym,
             )
-            restored = quantized / scale.unsqueeze(0)
+            restored = quantized_payload["dequantized"] / scale.unsqueeze(0)
 
             if reference_output is not None:
                 quantized_output = calibration_inputs.matmul(restored.t())
@@ -120,6 +143,17 @@ class AWQQuantizer:
                 best_loss = loss
                 best_alpha = alpha
                 best_weight = restored
+                best_artifact = {
+                    "packed_codes": pack_nbit_codes(quantized_payload["codes"].detach().cpu(), int(self.bits)),
+                    "shape": list(self.layer.weight.shape),
+                    "bits": int(self.bits),
+                    "group_size": int(self.group_size),
+                    "sym": bool(self.sym),
+                    "scales": quantized_payload["scales"].detach().cpu(),
+                    "zeros": quantized_payload["zeros"].detach().cpu(),
+                    "pre_scale": scale.detach().cpu().to(torch.float32),
+                    "dtype": str(self.layer.weight.data.dtype).replace("torch.", ""),
+                }
 
         if isinstance(self.layer, transformers.Conv1D):
             best_weight = best_weight.t()
@@ -133,6 +167,7 @@ class AWQQuantizer:
             "groupsize": int(self.group_size),
             "best_alpha": round(best_alpha, 4),
             "quantized_params": quantized_params,
+            "artifact_payload": best_artifact,
         }
 
     def free(self):
@@ -152,7 +187,9 @@ def find_linear_layers(module, prefix=""):
     return found
 
 
-def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
+def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str, apply_chat_template: bool = True) -> str:
+    if not apply_chat_template:
+        return user_prompt
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
@@ -162,8 +199,14 @@ def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
     return f"{system_prompt}\n{user_prompt}"
 
 
-def build_calibration_batch(tokenizer, prompts: List[str], system_prompt: str, max_length: int) -> Dict:
-    rendered = [render_chat_prompt(tokenizer, system_prompt, prompt) for prompt in prompts]
+def build_calibration_batch(
+    tokenizer,
+    prompts: List[str],
+    system_prompt: str,
+    max_length: int,
+    apply_chat_template: bool = True,
+) -> Dict:
+    rendered = [render_chat_prompt(tokenizer, system_prompt, prompt, apply_chat_template) for prompt in prompts]
     encoded = tokenizer(
         rendered,
         return_tensors="pt",
@@ -219,7 +262,8 @@ def capture_decoder_inputs(model, input_ids, attention_mask, device):
     layers = decoder.layers
     decoder.embed_tokens = decoder.embed_tokens.to(device)
     decoder.rotary_emb = decoder.rotary_emb.to(device)
-    layers[0] = layers[0].to(device)
+    layer0 = layers[0].to(device)
+    layers[0] = layer0
 
     dtype = next(iter(model.parameters())).dtype
     nsamples = input_ids.shape[0]
@@ -245,26 +289,28 @@ def capture_decoder_inputs(model, input_ids, attention_mask, device):
                 }
             )
             state["i"] += 1
-            raise ValueError
+            raise _CaptureInputsExit
 
     layers[0] = Catcher(layers[0])
-    for i in range(nsamples):
-        try:
-            model(
-                input_ids=input_ids[i : i + 1].to(device),
-                attention_mask=attention_mask[i : i + 1].to(device) if attention_mask is not None else None,
-                use_cache=False,
-            )
-        except ValueError:
-            pass
-
-    layers[0] = layers[0].module
-    layers[0] = layers[0].cpu()
-    decoder.embed_tokens = decoder.embed_tokens.cpu()
-    decoder.rotary_emb = decoder.rotary_emb.cpu()
-    model.config.use_cache = use_cache
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
+    try:
+        for i in range(nsamples):
+            try:
+                model(
+                    input_ids=input_ids[i : i + 1].to(device),
+                    attention_mask=attention_mask[i : i + 1].to(device) if attention_mask is not None else None,
+                    use_cache=False,
+                )
+            except _CaptureInputsExit:
+                pass
+    finally:
+        if isinstance(layers[0], Catcher):
+            layers[0] = layers[0].module
+        layers[0] = layers[0].cpu()
+        decoder.embed_tokens = decoder.embed_tokens.cpu()
+        decoder.rotary_emb = decoder.rotary_emb.cpu()
+        model.config.use_cache = use_cache
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     return hidden_states, sample_kwargs
 
 
@@ -400,6 +446,7 @@ def quantize_openpangu_awq_sequential(model, input_ids, attention_mask, device, 
 
     quantized_modules = []
     layer_stats = defaultdict(lambda: {"module_count": 0, "quantized_params": 0, "total_params": 0})
+    artifact_payloads = {}
 
     for layer_idx in range(len(layers)):
         layer = layers[layer_idx].to(device)
@@ -447,6 +494,7 @@ def quantize_openpangu_awq_sequential(model, input_ids, attention_mask, device, 
                 quant_metrics = quantizers[name].fasterquant()
                 total_params = int(subset[name].weight.numel())
                 global_name = f"model.layers.{layer_idx}.{name}"
+                artifact_payload = quant_metrics.pop("artifact_payload", None)
                 quantized_modules.append(
                     {
                         "layer": int(layer_idx),
@@ -458,6 +506,8 @@ def quantize_openpangu_awq_sequential(model, input_ids, attention_mask, device, 
                 layer_stats[layer_idx]["module_count"] += 1
                 layer_stats[layer_idx]["quantized_params"] += quant_metrics["quantized_params"]
                 layer_stats[layer_idx]["total_params"] += total_params
+                if artifact_payload is not None:
+                    artifact_payloads[global_name] = artifact_payload
                 quantizers[name].free()
 
         for sample_idx in range(hidden_states.shape[0]):
@@ -480,6 +530,7 @@ def quantize_openpangu_awq_sequential(model, input_ids, attention_mask, device, 
         "elapsed_s": round(time.time() - start, 4),
         "peak_memory_mb": _get_cuda_peak_memory_mb(device),
         "modules": quantized_modules,
+        "artifact_payloads": artifact_payloads,
         "layers": [
             {
                 "layer": int(layer_idx),

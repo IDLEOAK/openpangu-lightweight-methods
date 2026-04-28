@@ -13,7 +13,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from experiments.common.config import load_config, resolve_path
 from experiments.common.data import load_text_samples
-from experiments.common.inventory import collect_linear_inventory, select_target_modules
+from experiments.common.inventory import collect_linear_inventory, select_target_modules, validate_target_modules
 from experiments.common.reporting import create_run_dir, write_json
 from experiments.common.runtime import ensure_hf_home, select_runtime
 from experiments.llm_bip.algorithm import (
@@ -88,6 +88,12 @@ def main() -> int:
         config["calibration_data"]["max_length"] = args.calibration_max_length
         config["evaluation"]["perplexity_max_length"] = args.calibration_max_length
 
+    if config["evaluation"].get("run_generation", False):
+        raise ValueError(
+            "LLM-BIP proxy runner does not implement generation benchmarking. "
+            "Set evaluation.run_generation=false."
+        )
+
     model_path = resolve_path(REPO_ROOT, config["model_path"])
     hf_home = resolve_path(REPO_ROOT, config.get("hf_home"))
     output_root = resolve_path(REPO_ROOT, config["output_dir"])
@@ -102,6 +108,12 @@ def main() -> int:
     inventory = collect_linear_inventory(model)
     targets = select_target_modules(
         inventory,
+        config["module_selection"].get("include_groups", []),
+        config["module_selection"].get("exclude_patterns", []),
+    )
+    validate_target_modules(
+        inventory,
+        targets,
         config["module_selection"].get("include_groups", []),
         config["module_selection"].get("exclude_patterns", []),
     )
@@ -152,6 +164,7 @@ def main() -> int:
         texts,
         config["system_prompt"],
         int(config["calibration_data"].get("max_length", config["evaluation"]["perplexity_max_length"])),
+        apply_chat_template=not bool(config["calibration_data"].get("raw_text", False)),
     )
     summary["calibration_batch"] = {
         "sequence_length": calibration_batch["sequence_length"],
@@ -162,6 +175,7 @@ def main() -> int:
         evaluation_texts,
         config["system_prompt"],
         int(evaluation_data_cfg.get("max_length", config["evaluation"]["perplexity_max_length"])),
+        apply_chat_template=not bool(evaluation_data_cfg.get("raw_text", False)),
     )
     summary["evaluation_batch"] = {
         "sequence_length": evaluation_batch["sequence_length"],

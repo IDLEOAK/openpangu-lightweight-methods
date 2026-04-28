@@ -8,10 +8,20 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers
 
+from experiments.compressed_artifacts.io import pack_nbit_codes
+
+
+class _CaptureInputsExit(Exception):
+    """Internal sentinel used to stop the forward pass after layer-0 inputs are captured."""
+
 
 def quantize_tensor(x, scale, zero, maxq):
     q = torch.clamp(torch.round(x / scale) + zero, 0, maxq)
     return scale * (q - zero)
+
+
+def quantize_codes_tensor(x, scale, zero, maxq):
+    return torch.clamp(torch.round(x / scale) + zero, 0, maxq).to(torch.uint8)
 
 
 class Quantizer(nn.Module):
@@ -154,6 +164,7 @@ class GPTQ:
         groupsize=-1,
         actorder=False,
         static_groups=False,
+        collect_artifact=False,
     ):
         weight = self.layer.weight.data.clone()
         if isinstance(self.layer, nn.Conv2d):
@@ -187,6 +198,9 @@ class GPTQ:
                 quantizer.find_params(weight[:, i : (i + groupsize)], weight=True)
                 groups.append(quantizer)
 
+        if collect_artifact and actorder:
+            raise RuntimeError("GPTQ artifact export currently does not support actorder=True.")
+
         if actorder:
             perm = torch.argsort(torch.diag(hessian), descending=True)
             weight = weight[:, perm]
@@ -198,6 +212,17 @@ class GPTQ:
 
         losses = torch.zeros_like(weight)
         quantized_weight = torch.zeros_like(weight)
+        artifact_payload = None
+        effective_groupsize = self.columns if groupsize == -1 else groupsize
+        if collect_artifact:
+            num_groups = math.ceil(self.columns / effective_groupsize)
+            packed_codes = torch.empty((self.rows, self.columns), dtype=torch.uint8)
+            group_scales = torch.zeros((self.rows, num_groups), dtype=torch.float32)
+            group_zeros = torch.zeros((self.rows, num_groups), dtype=torch.float32)
+            if static_groups and groups is not None:
+                for group_idx, quantizer in enumerate(groups):
+                    group_scales[:, group_idx] = quantizer.scale.view(-1).detach().cpu().to(torch.float32)
+                    group_zeros[:, group_idx] = quantizer.zero.view(-1).detach().cpu().to(torch.float32)
 
         damp = percdamp * torch.mean(torch.diag(hessian))
         diag = torch.arange(self.columns, device=self.dev)
@@ -225,15 +250,26 @@ class GPTQ:
                     if not static_groups:
                         if (i1 + i) % groupsize == 0:
                             self.quantizer.find_params(weight[:, (i1 + i) : (i1 + i + groupsize)], weight=True)
+                            if collect_artifact:
+                                group_idx = (i1 + i) // effective_groupsize
+                                group_scales[:, group_idx] = self.quantizer.scale.view(-1).detach().cpu().to(torch.float32)
+                                group_zeros[:, group_idx] = self.quantizer.zero.view(-1).detach().cpu().to(torch.float32)
                     else:
                         idx = i1 + i
                         if actorder:
                             idx = perm[idx]
                         self.quantizer = groups[idx // groupsize]
+                elif collect_artifact and i1 == 0 and i == 0:
+                    group_scales[:, 0] = self.quantizer.scale.view(-1).detach().cpu().to(torch.float32)
+                    group_zeros[:, 0] = self.quantizer.zero.view(-1).detach().cpu().to(torch.float32)
 
                 q = quantize_tensor(
                     w.unsqueeze(1), self.quantizer.scale, self.quantizer.zero, self.quantizer.maxq
                 ).flatten()
+                if collect_artifact:
+                    packed_codes[:, i1 + i] = quantize_codes_tensor(
+                        w.unsqueeze(1), self.quantizer.scale, self.quantizer.zero, self.quantizer.maxq
+                    ).flatten().detach().cpu()
                 quant_block[:, i] = q
                 losses_block[:, i] = (w - q) ** 2 / d**2
 
@@ -250,18 +286,33 @@ class GPTQ:
 
         if actorder:
             quantized_weight = quantized_weight[:, invperm]
+            if collect_artifact:
+                packed_codes = packed_codes[:, invperm]
 
         if isinstance(self.layer, transformers.Conv1D):
             quantized_weight = quantized_weight.t()
         self.layer.weight.data = quantized_weight.reshape(self.layer.weight.shape).to(self.layer.weight.data.dtype)
 
         quantized_params = int(self.layer.weight.numel())
+        if collect_artifact:
+            artifact_payload = {
+                "packed_codes": pack_nbit_codes(packed_codes, int(round(math.log2(float(self.quantizer.maxq.item() + 1))))),
+                "shape": list(self.layer.weight.shape),
+                "bits": int(round(math.log2(float(self.quantizer.maxq.item() + 1)))),
+                "group_size": int(groupsize),
+                "sym": bool(self.quantizer.sym),
+                "scales": group_scales,
+                "zeros": group_zeros,
+                "pre_scale": None,
+                "dtype": str(self.layer.weight.data.dtype).replace("torch.", ""),
+            }
         return {
             "time_s": round(time.time() - start, 4),
             "error": round(float(torch.sum(losses).item()), 6),
             "bits": int(round(math.log2(float(self.quantizer.maxq.item() + 1)))),
             "groupsize": int(groupsize),
             "quantized_params": quantized_params,
+            "artifact_payload": artifact_payload,
         }
 
     def free(self):
@@ -280,7 +331,9 @@ def find_linear_layers(module, prefix=""):
     return found
 
 
-def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
+def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str, apply_chat_template: bool = True) -> str:
+    if not apply_chat_template:
+        return user_prompt
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
@@ -290,8 +343,14 @@ def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
     return f"{system_prompt}\n{user_prompt}"
 
 
-def build_calibration_batch(tokenizer, prompts: List[str], system_prompt: str, max_length: int) -> Dict:
-    rendered = [render_chat_prompt(tokenizer, system_prompt, prompt) for prompt in prompts]
+def build_calibration_batch(
+    tokenizer,
+    prompts: List[str],
+    system_prompt: str,
+    max_length: int,
+    apply_chat_template: bool = True,
+) -> Dict:
+    rendered = [render_chat_prompt(tokenizer, system_prompt, prompt, apply_chat_template) for prompt in prompts]
     encoded = tokenizer(
         rendered,
         return_tensors="pt",
@@ -347,7 +406,8 @@ def capture_decoder_inputs(model, input_ids, attention_mask, device):
     layers = decoder.layers
     decoder.embed_tokens = decoder.embed_tokens.to(device)
     decoder.rotary_emb = decoder.rotary_emb.to(device)
-    layers[0] = layers[0].to(device)
+    layer0 = layers[0].to(device)
+    layers[0] = layer0
 
     dtype = next(iter(model.parameters())).dtype
     nsamples = input_ids.shape[0]
@@ -373,26 +433,28 @@ def capture_decoder_inputs(model, input_ids, attention_mask, device):
                 }
             )
             state["i"] += 1
-            raise ValueError
+            raise _CaptureInputsExit
 
     layers[0] = Catcher(layers[0])
-    for i in range(nsamples):
-        try:
-            model(
-                input_ids=input_ids[i : i + 1].to(device),
-                attention_mask=attention_mask[i : i + 1].to(device) if attention_mask is not None else None,
-                use_cache=False,
-            )
-        except ValueError:
-            pass
-
-    layers[0] = layers[0].module
-    layers[0] = layers[0].cpu()
-    decoder.embed_tokens = decoder.embed_tokens.cpu()
-    decoder.rotary_emb = decoder.rotary_emb.cpu()
-    model.config.use_cache = use_cache
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
+    try:
+        for i in range(nsamples):
+            try:
+                model(
+                    input_ids=input_ids[i : i + 1].to(device),
+                    attention_mask=attention_mask[i : i + 1].to(device) if attention_mask is not None else None,
+                    use_cache=False,
+                )
+            except _CaptureInputsExit:
+                pass
+    finally:
+        if isinstance(layers[0], Catcher):
+            layers[0] = layers[0].module
+        layers[0] = layers[0].cpu()
+        decoder.embed_tokens = decoder.embed_tokens.cpu()
+        decoder.rotary_emb = decoder.rotary_emb.cpu()
+        model.config.use_cache = use_cache
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     return hidden_states, sample_kwargs
 
 
@@ -532,6 +594,8 @@ def quantize_openpangu_sequential(model, input_ids, attention_mask, device, sele
 
     quantized_modules = []
     layer_stats = defaultdict(lambda: {"module_count": 0, "quantized_params": 0, "total_params": 0})
+    artifact_payloads = {}
+    collect_artifacts = bool(gptq_config.get("compressed_artifact_dir"))
 
     for layer_idx in range(len(layers)):
         layer = layers[layer_idx].to(device)
@@ -581,10 +645,12 @@ def quantize_openpangu_sequential(model, input_ids, attention_mask, device, sele
                     groupsize=int(gptq_config.get("group_size", -1)),
                     actorder=bool(gptq_config.get("desc_act", False)),
                     static_groups=bool(gptq_config.get("static_groups", False)),
+                    collect_artifact=collect_artifacts,
                 )
                 weight = subset[name].weight.data
                 total_params = int(weight.numel())
                 global_name = f"model.layers.{layer_idx}.{name}"
+                artifact_payload = quant_metrics.pop("artifact_payload", None)
                 quantized_modules.append(
                     {
                         "layer": int(layer_idx),
@@ -596,6 +662,8 @@ def quantize_openpangu_sequential(model, input_ids, attention_mask, device, sele
                 layer_stats[layer_idx]["module_count"] += 1
                 layer_stats[layer_idx]["quantized_params"] += quant_metrics["quantized_params"]
                 layer_stats[layer_idx]["total_params"] += total_params
+                if artifact_payload is not None:
+                    artifact_payloads[global_name] = artifact_payload
                 gptq[name].free()
 
         for sample_idx in range(hidden_states.shape[0]):
@@ -618,6 +686,7 @@ def quantize_openpangu_sequential(model, input_ids, attention_mask, device, sele
         "elapsed_s": round(time.time() - start, 4),
         "peak_memory_mb": _get_cuda_peak_memory_mb(device),
         "modules": quantized_modules,
+        "artifact_payloads": artifact_payloads,
         "layers": [
             {
                 "layer": int(layer_idx),

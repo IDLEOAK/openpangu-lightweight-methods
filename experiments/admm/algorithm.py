@@ -9,6 +9,10 @@ import torch.nn.functional as F
 import transformers
 
 
+class _CaptureInputsExit(Exception):
+    """Internal sentinel used to stop the forward pass after layer-0 inputs are captured."""
+
+
 class ADMMPruner:
     """Layer-wise ADMM weight update with Wanda-style preconditioning."""
 
@@ -136,7 +140,9 @@ def find_linear_layers(module, prefix=""):
     return found
 
 
-def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
+def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str, apply_chat_template: bool = True) -> str:
+    if not apply_chat_template:
+        return user_prompt
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
@@ -146,8 +152,14 @@ def render_chat_prompt(tokenizer, system_prompt: str, user_prompt: str) -> str:
     return f"{system_prompt}\n{user_prompt}"
 
 
-def build_calibration_batch(tokenizer, prompts: List[str], system_prompt: str, max_length: int) -> Dict:
-    rendered = [render_chat_prompt(tokenizer, system_prompt, prompt) for prompt in prompts]
+def build_calibration_batch(
+    tokenizer,
+    prompts: List[str],
+    system_prompt: str,
+    max_length: int,
+    apply_chat_template: bool = True,
+) -> Dict:
+    rendered = [render_chat_prompt(tokenizer, system_prompt, prompt, apply_chat_template) for prompt in prompts]
     encoded = tokenizer(
         rendered,
         return_tensors="pt",
@@ -203,7 +215,8 @@ def capture_decoder_inputs(model, input_ids, attention_mask, device):
     layers = decoder.layers
     decoder.embed_tokens = decoder.embed_tokens.to(device)
     decoder.rotary_emb = decoder.rotary_emb.to(device)
-    layers[0] = layers[0].to(device)
+    layer0 = layers[0].to(device)
+    layers[0] = layer0
 
     dtype = next(iter(model.parameters())).dtype
     nsamples = input_ids.shape[0]
@@ -229,26 +242,28 @@ def capture_decoder_inputs(model, input_ids, attention_mask, device):
                 }
             )
             state["i"] += 1
-            raise ValueError
+            raise _CaptureInputsExit
 
     layers[0] = Catcher(layers[0])
-    for i in range(nsamples):
-        try:
-            model(
-                input_ids=input_ids[i : i + 1].to(device),
-                attention_mask=attention_mask[i : i + 1].to(device) if attention_mask is not None else None,
-                use_cache=False,
-            )
-        except ValueError:
-            pass
-
-    layers[0] = layers[0].module
-    layers[0] = layers[0].cpu()
-    decoder.embed_tokens = decoder.embed_tokens.cpu()
-    decoder.rotary_emb = decoder.rotary_emb.cpu()
-    model.config.use_cache = use_cache
-    if torch.cuda.is_available():
-        torch.cuda.empty_cache()
+    try:
+        for i in range(nsamples):
+            try:
+                model(
+                    input_ids=input_ids[i : i + 1].to(device),
+                    attention_mask=attention_mask[i : i + 1].to(device) if attention_mask is not None else None,
+                    use_cache=False,
+                )
+            except _CaptureInputsExit:
+                pass
+    finally:
+        if isinstance(layers[0], Catcher):
+            layers[0] = layers[0].module
+        layers[0] = layers[0].cpu()
+        decoder.embed_tokens = decoder.embed_tokens.cpu()
+        decoder.rotary_emb = decoder.rotary_emb.cpu()
+        model.config.use_cache = use_cache
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     return hidden_states, sample_kwargs
 
 

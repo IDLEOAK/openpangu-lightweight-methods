@@ -78,15 +78,24 @@ fi
 
 ### 4.3 Inference Examples
 
-The following provides a simple inference example of openPangu-Embedded-7B based on the `transformers` framework: 
->Please modify generate.py and add the model path before running.
+The following provides a simple inference example of openPangu-Embedded-7B based on the `transformers` framework.
+In this project fork, `inference/generate.py` already defaults the model path to the repository root and redirects `HF_HOME` to the project-level `.hf_cache` directory.
+
 ```bash
 cd inference
 python generate.py
 ```
 
-The openPangu-Embedded-7B model is in slow thinking mode by default, and can be switched to fast thinking mode by the following means:
-- In the code example `generate.py`, the definition of the `no_thinking_prompt` variable demonstrates the specific implementation for switching to fast thinking mode: by appending the `/no_think` tag at the end of user input, the current turn can be switched to fast thinking mode. In this mode, `thinking_content` will be an empty value.
+For minimal GPU baseline verification, use:
+
+```bash
+python inference/minimal_gpu_verify.py --model-path . --device-map auto --max-new-tokens 8
+```
+
+Note:
+- `generate.py` is a lightweight demo entrypoint for quick generation checks.
+- `minimal_gpu_verify.py` explicitly reports tokenizer load time, model load time, and one short generation pass.
+- The current `generate.py` does not include the previous `no_thinking_prompt` or `/no_think` switch example. Follow the actual script behavior as the source of truth.
 
 ### 4.4 Using Inference Framework
 vllm_ascend：[[vllm_ascend_for_openpangu_embedded_7b]](inference/vllm_ascend_for_openpangu_embedded_7b.md)

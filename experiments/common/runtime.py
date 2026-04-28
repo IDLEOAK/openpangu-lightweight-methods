@@ -5,9 +5,12 @@ from typing import Optional, Tuple
 import torch
 
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 def ensure_hf_home(hf_home: Optional[Path]) -> Path:
     if hf_home is None:
-        hf_home = Path.cwd() / ".hf_cache"
+        hf_home = REPO_ROOT / ".hf_cache"
     hf_home.mkdir(parents=True, exist_ok=True)
     os.environ["HF_HOME"] = str(hf_home)
     return hf_home

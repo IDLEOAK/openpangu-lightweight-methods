@@ -1,0 +1,22 @@
+{
+  "process_results_root": "/root/stage_c_work/stage_c_results",
+  "final_results_root": "experiments/results/stage_c_benchmark",
+  "final_summary_root": "/mnt/results/stage_c",
+  "methods": {
+    "sparsegpt": {
+      "artifact_dir": "experiments/results/sparsegpt/20260407-124200-sparsegpt_port_full34_stageb_export/compressed_artifact"
+    },
+    "admm": {
+      "artifact_dir": "experiments/results/admm/20260407-133959-admm_port_full34_stageb_export/compressed_artifact"
+    },
+    "gptq": {
+      "artifact_dir": "experiments/results/gptq/20260407-130543-gptq_port_full34_stageb_export/compressed_artifact"
+    },
+    "awq": {
+      "artifact_dir": "experiments/results/awq/20260407-135754-awq_port_full34_stageb_export/compressed_artifact"
+    },
+    "smoothquant": {
+      "artifact_dir": "experiments/results/smoothquant/20260407-141524-smoothquant_port_full34_stageb_export/compressed_artifact"
+    }
+  }
+}

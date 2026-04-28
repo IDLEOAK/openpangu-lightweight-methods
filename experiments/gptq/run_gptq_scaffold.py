@@ -14,10 +14,11 @@ if str(REPO_ROOT) not in sys.path:
 from experiments.common.benchmark import apply_benchmark_overrides, evaluate_multiple_choice, load_benchmark_plan
 from experiments.common.config import load_config, resolve_path
 from experiments.common.data import load_text_samples
-from experiments.common.inventory import collect_linear_inventory, select_target_modules
+from experiments.common.inventory import collect_linear_inventory, select_target_modules, validate_target_modules
 from experiments.common.metrics import measure_generation, measure_perplexity
-from experiments.common.reporting import create_run_dir, write_json
+from experiments.common.reporting import create_run_dir, summarize_directory, write_json
 from experiments.common.runtime import ensure_hf_home, load_tokenizer_and_model, select_runtime
+from experiments.compressed_artifacts.io import export_quant_artifact
 from experiments.gptq.algorithm import (
     build_calibration_batch,
     evaluate_openpangu_perplexity_sequential,
@@ -181,6 +182,12 @@ def main() -> int:
         config["module_selection"].get("include_groups", []),
         config["module_selection"].get("exclude_patterns", []),
     )
+    validate_target_modules(
+        inventory,
+        targets,
+        config["module_selection"].get("include_groups", []),
+        config["module_selection"].get("exclude_patterns", []),
+    )
     texts = load_text_samples(calibration_path, config["calibration_data"]["limit"])
     evaluation_texts = load_text_samples(
         evaluation_path if evaluation_data_cfg else calibration_path,
@@ -286,6 +293,7 @@ def main() -> int:
             texts,
             config["system_prompt"],
             int(config["calibration_data"].get("max_length", config["evaluation"]["perplexity_max_length"])),
+            apply_chat_template=not bool(config["calibration_data"].get("raw_text", False)),
         )
         summary["calibration_batch"] = {
             "sequence_length": calibration_batch["sequence_length"],
@@ -296,6 +304,7 @@ def main() -> int:
             evaluation_texts,
             config["system_prompt"],
             int(evaluation_data_cfg.get("max_length", config["evaluation"]["perplexity_max_length"])),
+            apply_chat_template=not bool(evaluation_data_cfg.get("raw_text", False)),
         )
         summary["evaluation_batch"] = {
             "sequence_length": evaluation_batch["sequence_length"],
@@ -345,6 +354,7 @@ def main() -> int:
             {module["name"] for module in targets},
             config["gptq"],
         )
+        artifact_payloads = quant_stats.pop("artifact_payloads", {})
         summary["quant_stats"] = {
             "module_count": quant_stats["module_count"],
             "total_quantized_params": quant_stats["total_quantized_params"],
@@ -397,6 +407,21 @@ def main() -> int:
             model.save_pretrained(save_dir)
             tokenizer.save_pretrained(save_dir)
             summary["saved_model_dir"] = str(save_dir)
+            summary["saved_model_format"] = "huggingface_dense_checkpoint_with_dequantized_rewritten_weights"
+            summary["saved_model_info"] = summarize_directory(save_dir)
+
+        compressed_artifact_dir = resolve_path(run_dir, config["gptq"].get("compressed_artifact_dir"))
+        if compressed_artifact_dir is not None:
+            compressed_info = export_quant_artifact(
+                artifact_payloads,
+                compressed_artifact_dir,
+                method="gptq",
+                base_model_path_hint=str(model_path),
+                source_model_path=str(save_dir) if save_dir is not None else str(model_path),
+            )
+            summary["compressed_artifact_dir"] = str(compressed_artifact_dir)
+            summary["compressed_artifact_format"] = "openpangu_quant_overlay_packed_nbit_v1"
+            summary["compressed_artifact_info"] = compressed_info
 
     write_json(run_dir / "linear_inventory.json", inventory)
     write_json(run_dir / "target_modules.json", targets)

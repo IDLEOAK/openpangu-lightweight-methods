@@ -19,10 +19,11 @@ from experiments.admm.algorithm import (
 from experiments.common.benchmark import apply_benchmark_overrides, evaluate_multiple_choice, load_benchmark_plan
 from experiments.common.config import load_config, resolve_path
 from experiments.common.data import load_text_samples
-from experiments.common.inventory import collect_linear_inventory, select_target_modules
+from experiments.common.inventory import collect_linear_inventory, select_target_modules, validate_target_modules
 from experiments.common.metrics import measure_generation
-from experiments.common.reporting import create_run_dir, write_json
+from experiments.common.reporting import create_run_dir, summarize_directory, write_json
 from experiments.common.runtime import ensure_hf_home, select_runtime
+from experiments.compressed_artifacts.io import export_sparse_artifact
 
 
 def load_admm_runtime_model(model_path: Path, hf_home: Optional[Path]):
@@ -171,6 +172,12 @@ def main() -> int:
         config["module_selection"].get("include_groups", []),
         config["module_selection"].get("exclude_patterns", []),
     )
+    validate_target_modules(
+        inventory,
+        targets,
+        config["module_selection"].get("include_groups", []),
+        config["module_selection"].get("exclude_patterns", []),
+    )
     texts = load_text_samples(calibration_path, config["calibration_data"]["limit"])
     evaluation_texts = load_text_samples(
         evaluation_path if evaluation_data_cfg else calibration_path,
@@ -229,6 +236,7 @@ def main() -> int:
         texts,
         config["system_prompt"],
         int(config["calibration_data"].get("max_length", config["evaluation"]["perplexity_max_length"])),
+        apply_chat_template=not bool(config["calibration_data"].get("raw_text", False)),
     )
     summary["calibration_batch"] = {
         "sequence_length": calibration_batch["sequence_length"],
@@ -239,6 +247,7 @@ def main() -> int:
         evaluation_texts,
         config["system_prompt"],
         int(evaluation_data_cfg.get("max_length", config["evaluation"]["perplexity_max_length"])),
+        apply_chat_template=not bool(evaluation_data_cfg.get("raw_text", False)),
     )
     summary["evaluation_batch"] = {
         "sequence_length": evaluation_batch["sequence_length"],
@@ -332,6 +341,29 @@ def main() -> int:
             "tasks": pruned_benchmark["tasks"],
         }
         write_json(run_dir / "pruned_benchmark_predictions.json", pruned_benchmark.get("results", []))
+
+    save_dir = resolve_path(run_dir, config["admm"].get("save_dir"))
+    if save_dir is not None:
+        save_dir.mkdir(parents=True, exist_ok=True)
+        model.save_pretrained(save_dir)
+        tokenizer.save_pretrained(save_dir)
+        summary["saved_model_dir"] = str(save_dir)
+        summary["saved_model_format"] = "huggingface_dense_checkpoint_with_zeroed_weights"
+        summary["saved_model_info"] = summarize_directory(save_dir)
+
+    compressed_artifact_dir = resolve_path(run_dir, config["admm"].get("compressed_artifact_dir"))
+    if compressed_artifact_dir is not None:
+        compressed_info = export_sparse_artifact(
+            model,
+            [module["name"] for module in targets],
+            compressed_artifact_dir,
+            method="admm",
+            base_model_path_hint=str(model_path),
+            source_model_path=str(save_dir) if save_dir is not None else str(model_path),
+        )
+        summary["compressed_artifact_dir"] = str(compressed_artifact_dir)
+        summary["compressed_artifact_format"] = "openpangu_sparse_overlay_mask_values_v1"
+        summary["compressed_artifact_info"] = compressed_info
 
     write_json(run_dir / "linear_inventory.json", inventory)
     write_json(run_dir / "target_modules.json", targets)

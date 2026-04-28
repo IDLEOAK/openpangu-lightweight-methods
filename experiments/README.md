@@ -39,7 +39,8 @@ Current project-level conclusions:
 
 1. SparseGPT has completed minimal, multi-layer, and full34 execution.
 2. GPTQ has completed minimal, multi-layer, and full34 execution.
-3. `results/current_result_summary.{json,md}` is the canonical summary entry for the latest unified snapshot.
+3. `results/current_result_summary.{json,md}` summarizes the current prompt-eval/generation snapshot across the currently tracked main methods.
+4. For cross-method benchmark comparison, use `results/benchmark_result_summary.json`.
 
 ## Example
 

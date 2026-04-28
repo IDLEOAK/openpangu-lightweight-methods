@@ -37,16 +37,17 @@ C:\Tools\anaconda3\python.exe experiments\data\prepare_public_eval_sets.py
 1. `wikitext2_test_public_eval.jsonl` and `chinesewebtext2_test_public_eval.jsonl` are plain `jsonl` files with a `text` field.
 2. The current experiment framework reads them through `experiments.common.data.load_text_samples`.
 3. Public-corpus evaluation configs should keep calibration on `demo_prompts.jsonl` and switch only `evaluation_data.path`.
-4. Benchmark jsonl files store `prompt`, `choices`, and `answer_index` for multiple-choice evaluation.
-5. The first benchmark task set is exported by:
+4. For public-corpus perplexity evaluation, `evaluation_data.raw_text` should be set to `true` so corpus rows are evaluated as raw text instead of being wrapped in the chat template.
+5. Benchmark jsonl files store `prompt`, `choices`, and `answer_index` for multiple-choice evaluation.
+6. The first benchmark task set is exported by:
 
 ```powershell
 C:\Tools\anaconda3\python.exe experiments\data\prepare_benchmark_sets.py --max-samples-per-task 128
 ```
 
-6. Supported benchmark task groups:
+7. Supported benchmark task groups:
    - `smoke`: quick local validation
    - `mmlu_core_en`: English MMLU core subjects
    - `cmmlu_core_zh`: Chinese CMMLU core subjects
    - `formal_core`: the current formal benchmark candidate set
-7. `cmmlu_core_zh` currently uses `svjack/cmmlu` `train` split filtered by subject because it is the most stable loadable Chinese MMLU-style source in the current environment. This should be stated explicitly when writing up results.
+8. `cmmlu_core_zh` currently uses `svjack/cmmlu` `train` split filtered by subject because it is the most stable loadable Chinese MMLU-style source in the current environment. This should be stated explicitly when writing up results.

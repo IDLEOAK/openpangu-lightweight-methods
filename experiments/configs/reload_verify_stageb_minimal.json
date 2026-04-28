@@ -1,0 +1,26 @@
+{
+  "experiment_name": "reload_verify_stageb_minimal",
+  "method": "reload_verify",
+  "model_path": ".",
+  "hf_home": ".hf_cache",
+  "device_map": "",
+  "torch_dtype": "auto",
+  "system_prompt": "You are a helpful assistant.",
+  "evaluation_data": {
+    "path": "experiments/data/formal_eval_prompts.jsonl",
+    "limit": 16,
+    "max_length": 192
+  },
+  "evaluation": {
+    "perplexity_max_length": 192
+  },
+  "benchmark_data": {
+    "path": "experiments/data/benchmarks/boolq_validation_mcq.jsonl",
+    "limit": 16
+  },
+  "benchmark_evaluation": {
+    "max_length": 1024,
+    "scoring_mode": "avg_logprob"
+  },
+  "output_dir": "experiments/results"
+}

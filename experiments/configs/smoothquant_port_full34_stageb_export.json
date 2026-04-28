@@ -1,6 +1,6 @@
 {
-  "experiment_name": "admm_port_full34_wikitext2_eval",
-  "method": "admm",
+  "experiment_name": "smoothquant_port_full34_stageb_export",
+  "method": "smoothquant",
   "model_path": ".",
   "hf_home": ".hf_cache",
   "device_map": "",
@@ -12,16 +12,15 @@
     "max_length": 128
   },
   "evaluation_data": {
-    "path": "experiments/data/wikitext2_test_public_eval.jsonl",
-    "limit": 512,
-    "max_length": 192,
-    "raw_text": true
+    "path": "experiments/data/formal_eval_prompts.jsonl",
+    "limit": 16,
+    "max_length": 192
   },
   "evaluation": {
-    "run_generation": false,
+    "run_generation": true,
     "run_perplexity": true,
-    "run_post_prune_perplexity": true,
-    "generation_samples": 0,
+    "run_post_quant_perplexity": true,
+    "generation_samples": 2,
     "max_new_tokens": 8,
     "perplexity_max_length": 192
   },
@@ -34,20 +33,18 @@
       "lm_head"
     ]
   },
-  "admm": {
-    "mode": "sequential_prune",
-    "sparsity": 0.3,
-    "update_steps": 20,
-    "sparsify_steps": 15,
-    "rho": 1.0,
-    "ridge": 0.1,
-    "gradual": true,
+  "smoothquant": {
+    "mode": "sequential_smoothquant",
+    "bits": 8,
+    "group_size": 128,
+    "alpha": 0.5,
     "true_sequential": true,
     "min_layer": 0,
     "max_layer": 34,
-    "prune_only": "",
+    "quantize_only": "",
     "invert": false,
-    "save_dir": ""
+    "save_dir": "exported_model",
+    "compressed_artifact_dir": "compressed_artifact"
   },
   "output_dir": "experiments/results"
 }
