@@ -1,13 +1,20 @@
-# Stage B Export And Reload Runbook
+# Export And Reload Validation Runbook
 
 ## Goal
 
-Stage B is now split into two sub-stages:
+This runbook covers the repository's internal `stage_b` export and reload flow.
+For external writing, thesis wording, and defense narration, it is better described as:
+
+1. export a reloadable model
+2. export the final compressed artifact
+3. perform minimal reload verification
+
+The internal flow is still split into two sub-steps:
 
 1. `B1`: export a reloadable Hugging Face checkpoint and verify it under the same evaluation path
 2. `B2`: export the final compressed storage artifact and verify it on top of the base dense model
 
-## What Each Stage Produces
+## What Each Sub-Step Produces
 
 1. `B1`
    - `exported_model/`
@@ -18,9 +25,9 @@ Stage B is now split into two sub-stages:
    - pruning methods: sparse mask + nonzero values
    - quantization methods: packed low-bit codes + scales / zeros (+ pre-scale when needed)
 
-## Files Produced By Stage B
+## Files Produced By This Flow
 
-For each method run, the stage now writes:
+For each method run, this flow now writes:
 
 1. `summary.json`
    - includes `saved_model_dir`

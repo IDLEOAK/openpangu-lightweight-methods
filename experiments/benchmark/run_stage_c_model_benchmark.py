@@ -23,8 +23,10 @@ def read_json(path: Path) -> Dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run one Stage C benchmark task for either the dense baseline or a Stage B compressed artifact.")
-    parser.add_argument("--config", required=True, help="Path to Stage C benchmark config.")
+    parser = argparse.ArgumentParser(
+        description="Run one final-artifact benchmark task for either the dense baseline or a compressed artifact."
+    )
+    parser.add_argument("--config", required=True, help="Path to the final-artifact benchmark config.")
     parser.add_argument("--benchmark-data", default="", help="Optional override for config.benchmark_data.path.")
     parser.add_argument("--limit", type=int, default=None, help="Optional override for config.benchmark_data.limit.")
     parser.add_argument("--max-length", type=int, default=None, help="Optional override for config.evaluation.max_length.")

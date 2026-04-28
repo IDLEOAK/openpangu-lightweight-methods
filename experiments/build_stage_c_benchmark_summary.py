@@ -115,7 +115,7 @@ def main() -> int:
     summary_md = summary_root / "stage_c_benchmark_summary.md"
     summary_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    lines = ["# Stage C Benchmark Summary", ""]
+    lines = ["# Final Artifact Benchmark Summary", ""]
     lines.append("## Aggregate Metrics")
     lines.append("")
     lines.append(
