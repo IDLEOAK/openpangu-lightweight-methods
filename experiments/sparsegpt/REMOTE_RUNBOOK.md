@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This runbook is for running the OpenPangu SparseGPT experiments on a remote Linux server after copying the prepared bundle.
+This runbook records the early remote SparseGPT minimal-run path after copying a prepared bundle to a Linux server. It remains useful for backtracking environment setup or revalidating a new remote machine, but the maintained experiment line has moved to full-34-layer export, public-corpus PPL evaluation, reload verification, and final artifact benchmarking.
 
 ## Expected Remote Layout
 
@@ -34,9 +34,16 @@ This file already includes a configuration block at the top. In the default form
 
 If the remote directory layout matches the expected structure, you should be able to run the file directly without editing the path fields.
 
-## Recommended Next Stage
+## Current Workflow Note
 
-After the minimal run succeeds, do not jump to the full model at once. Edit the config block in `remote_sparsegpt_job.py` and expand the range gradually:
+For current full-34-layer experiments, prefer the shared config and runbook entrypoints under `experiments/`:
+
+1. `experiments/configs/sparsegpt_port_full34_export_bundle.json` for full-model export artifact generation
+2. `experiments/EXPORT_RELOAD_ROUNDTRIP_RUNBOOK.md` for exported-model and compressed-artifact reload checks
+3. `experiments/FINAL_ARTIFACT_BENCHMARK_RUNBOOK.md` for the final `MMLU hard 8 + C-Eval hard 8` artifact benchmark
+4. `experiments/results/final_artifact_benchmark_summary.{json,md}` for the maintained benchmark result entrypoint
+
+The gradual layer expansion below is only needed when validating a fresh remote environment from the minimal script:
 
 1. first `MIN_LAYER=0`, `MAX_LAYER=4`
 2. then continue to larger ranges only if the previous run is stable
